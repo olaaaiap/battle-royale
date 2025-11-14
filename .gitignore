@@ -60,6 +60,14 @@
 /*.cmake
 Makefile
 
+Debug/
+x64/
+x64/Debug/
+*.idb
+*.tlog
+*.obj
+*.pdb
+
 # IDE / Editor files
 .vscode/
 *.code-workspace
