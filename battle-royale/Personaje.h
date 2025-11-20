@@ -16,6 +16,12 @@ class Personaje
 	int equipamiento;
 public:
 
+	/*int GetVida() const;
+	int GetAtaque() const;
+	void SetVida(int v);
+	*/
+
+
 	int GetVida() 
 	{ 
 		return vida; 
@@ -33,8 +39,8 @@ public:
 	int y;
 	
 	Personaje(string, string, int, int, int);
-	void Atacar();
-	bool Scan(const vector<Personaje>& personajes);
+	void Atacar(Personaje& enemigo);
+	int Scan(const vector<Personaje>& personajes);
 	void RecibirDaño(int);
 	void Destruir();
 	void AumentarVida(int);

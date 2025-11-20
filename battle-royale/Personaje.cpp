@@ -15,34 +15,37 @@ Personaje::Personaje(string nombreP, string aliasP, int ataqueP, int vidaP, int 
 }
 
 
-void Personaje::Atacar() 
+void Personaje::Atacar(Personaje& enemigo)
 {
+	enemigo.RecibirDaño(ataque);
 
+	if (enemigo.vida <= 0)
+	{
+		enemigo.Destruir();
+	}
 }
 
-bool Personaje::Scan(const vector<Personaje>& personajes)
+
+int Personaje::Scan(const vector<Personaje>& personajes)
 {
-	for (const auto& p : personajes)
+	for (int i = 0; i < personajes.size(); i++)
 	{
+		const Personaje& p = personajes[i];
 		if (&p == this) continue;
-
-		// Detectar arriba
+		// detectar arriba
 		if (p.x == x - 1 && p.y == y)
-			return true;
-
-		// Detectar abajo
+			return i;
+		// detectar abajo
 		if (p.x == x + 1 && p.y == y)
-			return true;
-
-		// Detectar ala izquierda
+			return i;
+		// detectar ala izquierda
 		if (p.x == x && p.y == y - 1)
-			return true;
-
-		// Detecta a la derecha
+			return i;
+		// detectar a la derecha
 		if (p.x == x && p.y == y + 1)
-			return true;
+			return i;
 	}
-	return false;
+	return -1; // no hay enemigo cerca
 }
 
 void Personaje::RecibirDaño(int daño) 
@@ -52,7 +55,11 @@ void Personaje::RecibirDaño(int daño)
 
 void Personaje::Destruir() 
 {
-	//cout << el personaje << " ha sido eliminado.\n";
+	void Personaje::Destruir()
+	{
+		vida = 0;
+		//cout << el personaje << " ha sido eliminado.\n";
+	}
 }
 
 void Personaje::AumentarVida(int cantVida) 

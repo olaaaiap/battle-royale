@@ -178,6 +178,26 @@ int main()
 		system("pause");
 	}
 
+	// COMBATE: revisar cada personaje PERO NECESITO ACCEDER A LA VIDA
+	//for (int i = 0; i < personajes.size(); i++)
+	//{
+	//	Personaje& p = personajes[i];
+	//	int enemigoIndex = p.Scan(personajes);
+	//	if (enemigoIndex != -1)
+	//	{
+	//		Personaje& enemigo = personajes[enemigoIndex];
+	//		while (p.vida > 0 && enemigo.vida > 0)
+	//		{
+	//			p.Atacar(enemigo);
+	//			if (enemigo.vida <= 0) break;
+	//			enemigo.Atacar(p);
+	//		}
+	//		// eliminar a los muertos del vector
+	//		personajes.erase(remove_if(personajes.begin(), personajes.end(),[](const Personaje& pj) { return pj.vida <= 0; }),personajes.end());
+	//	}
+	//}
+
+
 	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
 	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
 	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
