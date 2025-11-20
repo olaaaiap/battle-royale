@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+
 using namespace std;
 
 int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
@@ -81,7 +82,7 @@ int main()
 				matriz[i][j] = "--";
 			}
 			else {
-				matriz[i][j] = " ";
+				matriz[i][j] = "  ";
 			}
 			//std::cout << matriz[i][j];
 		}
@@ -107,28 +108,34 @@ int main()
 	
 	vector<int> usados = {}; // espada y capa ya usadas
 
-
+	int cantidadTotal = 0;
 	cantidadGuerreros = imprimirRequestPersonaje("Guerrero", 4, 16, 40);
+	cantidadTotal += cantidadGuerreros;
 	equipamientoG = imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoG);
 
 	cantidadMagos = imprimirRequestPersonaje("Mago", 5, 10, 40);
+	cantidadTotal += cantidadMagos;
 	equipamientoM= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoM);
 
 	cantidadOgros = imprimirRequestPersonaje("Ogro", 4, 20, 40);
+	cantidadTotal += cantidadOgros;
 	equipamientoO= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoO);
 
 	cantidadArquera = imprimirRequestPersonaje("Arquera", 4, 11, 40);
+	cantidadTotal += cantidadArquera;
 	equipamientoA= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoA);
 
 	cantidadDragones = imprimirRequestPersonaje("Dragones", 5, 18, 40);
+	cantidadTotal += cantidadDragones;
 	equipamientoD= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoD);
 
 	cantidadVampiros = imprimirRequestPersonaje("Vampiro", 4, 13, 40);
+	cantidadTotal += cantidadVampiros;
 	equipamientoV= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoV);
 
@@ -153,6 +160,37 @@ int main()
 	Personaje dragon = Personaje("Dragon","D", 5, 18, 0);
 	Personaje vampiro = Personaje("Vampiro","V", 4, 13, 0);
 
+
+	string simbolos[6] = { " G", " M", " O", " A", " D", " V" };
+
+	int cantidades[6] = {
+		cantidadGuerreros,
+		cantidadMagos,
+		cantidadOgros,
+		cantidadArquera,
+		cantidadDragones,
+		cantidadVampiros
+	};
+
+	for (int tipo = 0; tipo < 6; tipo++) {
+
+		for (int i = 0; i < cantidades[tipo]; i++) {
+
+			int x = rand() % 23 + 1; 
+			int y = rand() % 38 + 1; 
+
+			matriz[x][y] = simbolos[tipo];
+		}
+	}
+
+
+	for (int i = 0; i < 25; i++) {//col
+		for (int j = 0; j < 40; j++) {
+			
+			std::cout << matriz[i][j];
+		}
+		std::cout << std::endl;  // Salto de línea al terminar cada fila
+	}
 
 	return 0;
 }
