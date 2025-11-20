@@ -16,6 +16,9 @@ class Personaje
 	int vidaMax;
 	int equipamiento;
 public:
+	int x;
+	int y;
+	
 	Personaje(string, string, int, int, int);
 	void Atacar();
 	void RecibirDaño(int);

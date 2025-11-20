@@ -9,6 +9,9 @@ Personaje::Personaje(string nombreP, string aliasP, int ataqueP, int vidaP, int 
 	vida = vidaP;
 	vidaMax = vidaP;
 	equipamiento = equipamientoP;
+
+	x = 0;
+	y = 0;
 }
 
 
@@ -24,7 +27,7 @@ void Personaje::RecibirDaño(int daño)
 
 void Personaje::Destruir() 
 {
-
+	//cout << el personaje << " ha sido eliminado.\n";
 }
 
 void Personaje::AumentarVida(int cantVida) 
