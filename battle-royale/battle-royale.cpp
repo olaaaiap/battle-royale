@@ -169,6 +169,41 @@ int main()
 		p.x = rand() % 23 + 1; // entre 1 y 23
 		p.y = rand() % 38 + 1; // entre 1 y 38
 	}
+	//esto es el bucle de turnos donde todos se mueven, vali?
+	while (personajes.size() > 1)
+	{
+		// Mover a todos
+		for (auto& p : personajes)
+		{
+			p.Moverse();
+		}
+		cout << "\n--- TURNO ---\n";
+		for (auto& p : personajes)
+		{
+			cout << p.GetAlias() << " -> (" << p.x << "," << p.y << ")\n";
+		}
+		system("pause");
+	}
+
+	// COMBATE: revisar cada personaje PERO NECESITO ACCEDER A LA VIDA
+	//for (int i = 0; i < personajes.size(); i++)
+	//{
+	//	Personaje& p = personajes[i];
+	//	int enemigoIndex = p.Scan(personajes);
+	//	if (enemigoIndex != -1)
+	//	{
+	//		Personaje& enemigo = personajes[enemigoIndex];
+	//		while (p.vida > 0 && enemigo.vida > 0)
+	//		{
+	//			p.Atacar(enemigo);
+	//			if (enemigo.vida <= 0) break;
+	//			enemigo.Atacar(p);
+	//		}
+	//		// eliminar a los muertos del vector
+	//		personajes.erase(remove_if(personajes.begin(), personajes.end(),[](const Personaje& pj) { return pj.vida <= 0; }),personajes.end());
+	//	}
+	//}
+
 
 	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
 	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
