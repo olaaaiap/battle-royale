@@ -1,8 +1,7 @@
 #pragma once
-
-
 #include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -16,11 +15,26 @@ class Personaje
 	int vidaMax;
 	int equipamiento;
 public:
+
+	int GetVida() 
+	{ 
+		return vida; 
+	}
+	int GetAtaque() 
+	{ 
+		return ataque; 
+	}
+	string GetAlias() 
+	{ 
+		return alias; 
+	}
+
 	int x;
 	int y;
 	
 	Personaje(string, string, int, int, int);
 	void Atacar();
+	bool Scan(const vector<Personaje>& personajes);
 	void RecibirDaño(int);
 	void Destruir();
 	void AumentarVida(int);
