@@ -3,6 +3,70 @@
 #include "Equipamiento.h"
 #include "Personaje.h"
 
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
+	int x;
+
+	// Convertir nombre a mayúsculas
+	string nombreUpper = nombre;
+	transform(nombreUpper.begin(), nombreUpper.end(), nombreUpper.begin(), ::toupper);
+
+	cout << nombreUpper << " (Ataque: " << ataque << "; Vida: " << vida << ")\n";
+	cout << "Cuantos quieres? ";
+	cin >> x;
+
+	while (x > max) {
+		cout << "El numero maximo por cada tipo es " << max << "!!\n";
+		cout << nombreUpper << " (Ataque: " << ataque << "; Vida: " << vida << ")\n";
+		cout << "Cuantos quieres? ";
+		cin >> x;
+	}
+
+	cout << "Cantidad de " << nombre << "s: " << x << "\n\n";
+	return x;
+}
+
+
+int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
+	int x;
+
+	// Lista de textos
+	vector<string> opciones = {
+		"Espada (Ataque 2)",
+		"Escudo (Defensa 3)",
+		"Capa ignífuga (Defensa 1)",
+		"Red antiflechas (Defensa 2)",
+		"Arco encantado (Ataque 1)",
+		"Mazo (Ataque 2)",
+		"Amuleto (Defensa 1)",
+		"Poción de rabia (Ataque 2)"
+	};
+
+	cout << "Elige su equipamiento:\n";
+
+	// Mostrar solo las opciones NO usadas
+	for (int i = 0; i < opciones.size(); i++) {
+		if (find(listaUsados.begin(), listaUsados.end(), i + 1) == listaUsados.end()) {
+			cout << " " << i + 1 << ". " << opciones[i] << "\n";
+		}
+	}
+
+	cin >> x;
+
+	// Validación: que exista y que NO esté usado
+	while (x < 1 || x > opciones.size() ||
+		find(listaUsados.begin(), listaUsados.end(), x) != listaUsados.end()) {
+		cout << "Opción no válida, elige otra: ";
+		cin >> x;
+	}
+
+	return x;
+}
+
 int main()
 {
 	string matriz[25][40];
@@ -33,94 +97,42 @@ int main()
 	int cantidadArquera;
 	int cantidadDragones;
 	int cantidadVampiros;
+	int equipamientoG;
+	int equipamientoM;
+	int equipamientoO;
+	int equipamientoA;
+	int equipamientoD;
+	int equipamientoV;
 
-	///////////////////////////// GUERRERO /////////////////////////////
-	cout << "GUERRERO (Ataque: 4; Vida: 16) \n"; 
-	cout << "Cuantos quieres? "; 
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "GUERRERO (Ataque: 4; Vida: 16)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
-	}
-	cout << "Cantidad de guerreros: " << x;
-	cantidadGuerreros = x;
-	cout << "\n\n";
-
-	///////////////////////////// END GUERRERO /////////////////////////////
+	
+	vector<int> usados = {}; // espada y capa ya usadas
 
 
+	cantidadGuerreros = imprimirRequestPersonaje("Guerrero", 4, 16, 40);
+	equipamientoG = imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoG);
 
-	cout << "MAGO (Ataque: 5; Vida: 10) \n";
-	cout << "Cuantos quieres? ";
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "MAGO (Ataque: 5; Vida: 10)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
-	}
-	cout << "Cantidad de magos: " << x;
-	cantidadMagos = x;
-	cout << "\n\n";
+	cantidadMagos = imprimirRequestPersonaje("Mago", 5, 10, 40);
+	equipamientoM= imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoM);
 
-	cout << "OGRO (Ataque: 4; Vida: 20) \n";
-	cout << "Cuantos quieres? ";
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "OGRO (Ataque: 4; Vida: 20)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
-	}
-	cout << "Cantidad de ogros: " << x;
-	cantidadOgros = x;
-	cout << "\n\n";
+	cantidadOgros = imprimirRequestPersonaje("Ogro", 4, 20, 40);
+	equipamientoO= imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoO);
 
-	cout << "ARQUERA (Ataque: 4; Vida: 11)\n";
-	cout << "Cuantos quieres? ";
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "ARQUERA (Ataque: 4; Vida: 11)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
+	cantidadArquera = imprimirRequestPersonaje("Arquera", 4, 11, 40);
+	equipamientoA= imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoA);
 
-	}
-	cout << "ARQUERA: " << x;
-	cantidadArquera = x;
-	cout << "\n\n";
+	cantidadDragones = imprimirRequestPersonaje("Dragones", 5, 18, 40);
+	equipamientoD= imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoD);
+
+	cantidadVampiros = imprimirRequestPersonaje("Vampiro", 4, 13, 40);
+	equipamientoV= imprimirRequestEquipamiento(usados);
+	usados.push_back(equipamientoV);
 
 
-	cout << "DRAGON (Ataque: 5; Vida: 18)\n";
-	cout << "Cuantos quieres? ";
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "DRAGON (Ataque: 5; Vida: 18)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
-	}
-	cout << "DRAGON: " << x;
-	cantidadDragones = x;
-	cout << "\n\n";
-	 
-
-	cout << "VAMPIRO (Ataque: 4; Vida: 13)\n";
-	cout << "Cuantos quieres? ";
-	cin >> x;
-	while (x > max) {
-		cout << "El numero maximo por cada tipo es 40!!\n";
-		cout << "VAMPIRO (Ataque: 4; Vida: 13)\n";
-		cout << "Cuantos quieres? ";
-		cin >> x;
-	}
-	cout << "VAMPIRO: " << x;
-	cantidadVampiros = x;
-	cout << "\n\n";
-
-	return 0;
 
 
 	Equipamiento espada = Equipamiento(1, "Espada", 2, 0);
@@ -142,5 +154,6 @@ int main()
 	Personaje vampiro = Personaje("Vampiro","V", 4, 13, 0);
 
 
+	return 0;
 }
 
