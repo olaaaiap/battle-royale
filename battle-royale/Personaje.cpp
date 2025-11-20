@@ -82,11 +82,9 @@ void Personaje::RecibirDaño(int daño)
 
 void Personaje::Destruir() 
 {
-	void Personaje::Destruir()
-	{
-		vida = 0;
-		//cout << el personaje << " ha sido eliminado.\n";
-	}
+	vida = 0;
+	//cout << el personaje << " ha sido eliminado.\n";
+	
 }
 
 void Personaje::AumentarVida(int cantVida) 
