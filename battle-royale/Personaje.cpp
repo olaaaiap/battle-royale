@@ -45,6 +45,33 @@ bool Personaje::Scan(const vector<Personaje>& personajes)
 	return false;
 }
 
+bool Personaje::ScanIndividual(string matriz[25][40], int x, int y)
+{
+	//En la posición
+	if (matriz[x][y] != "  ") {
+		return true;
+	}
+	//A la derecha
+	if (matriz[x+1][y] != "  ") {
+		return true;
+	}
+	//Arriba
+	if (matriz[x][y+1] != "  ") {
+		return true;
+	}
+	//Izquierda
+	if (matriz[x-1][y] != "  ") {
+		return true;
+	}
+	//Abajo
+	if (matriz[x - 1][y] != "  ") {
+		return true;
+	}
+	
+	return false;
+}
+
+
 void Personaje::RecibirDaño(int daño) 
 {
 	vida -= daño;

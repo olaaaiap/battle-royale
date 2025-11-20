@@ -35,6 +35,7 @@ public:
 	Personaje(string, string, int, int, int);
 	void Atacar();
 	bool Scan(const vector<Personaje>& personajes);
+	bool ScanIndividual(string matriz[25][40], int x, int y);
 	void RecibirDaño(int);
 	void Destruir();
 	void AumentarVida(int);

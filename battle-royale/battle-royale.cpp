@@ -169,6 +169,50 @@ int main()
 		p.x = rand() % 23 + 1; // entre 1 y 23
 		p.y = rand() % 38 + 1; // entre 1 y 38
 	}
+
+	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
+	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
+	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
+	for (int i = 0; i < cantidadArquera; i++) personajes.push_back(arquera);
+	for (int i = 0; i < cantidadDragones; i++) personajes.push_back(dragon);
+	for (int i = 0; i < cantidadVampiros; i++) personajes.push_back(vampiro);
+
+	
+	//OLAIA
+
+	for (auto& p : personajes)
+	{
+		std::cout << "escaneando " + p.GetAlias() + "\n";
+		bool hayAlgo = true;
+
+		// Buscar una posición vacía
+		while (hayAlgo)
+		{
+			p.x = rand() % 23 + 1; // entre 1 y 23
+			p.y = rand() % 38 + 1; // entre 1 y 38
+
+			hayAlgo = p.ScanIndividual(matriz, p.x, p.y);
+		}
+
+		// Si sale del while, la posición está libre
+		matriz[p.x][p.y] = " " + p.GetAlias();
+	}
+
+	//Dibujar matriz inicial
+	for (int i = 0; i < 25; i++) {//col
+		for (int j = 0; j < 40; j++) {
+
+			std::cout << matriz[i][j];
+		}
+		std::cout << std::endl;  // Salto de línea al terminar cada fila
+	}
+
+
+
+
+
+
+
 	//esto es el bucle de turnos donde todos se mueven, vali?
 	while (personajes.size() > 1)
 	{
@@ -185,44 +229,7 @@ int main()
 		system("pause");
 	}
 
-	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
-	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
-	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
-	for (int i = 0; i < cantidadArquera; i++) personajes.push_back(arquera);
-	for (int i = 0; i < cantidadDragones; i++) personajes.push_back(dragon);
-	for (int i = 0; i < cantidadVampiros; i++) personajes.push_back(vampiro);
-
-
-	string simbolos[6] = { " G", " M", " O", " A", " D", " V" };
-
-	int cantidades[6] = {
-		cantidadGuerreros,
-		cantidadMagos,
-		cantidadOgros,
-		cantidadArquera,
-		cantidadDragones,
-		cantidadVampiros
-	};
-
-	for (int tipo = 0; tipo < 6; tipo++) {
-
-		for (int i = 0; i < cantidades[tipo]; i++) {
-
-			int x = rand() % 23 + 1; 
-			int y = rand() % 38 + 1; 
-
-			matriz[x][y] = simbolos[tipo];
-		}
-	}
-
-
-	for (int i = 0; i < 25; i++) {//col
-		for (int j = 0; j < 40; j++) {
-			
-			std::cout << matriz[i][j];
-		}
-		std::cout << std::endl;  // Salto de línea al terminar cada fila
-	}
+	
 
 	return 0;
 }
