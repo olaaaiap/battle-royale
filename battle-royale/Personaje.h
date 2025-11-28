@@ -41,11 +41,11 @@ public:
 	Personaje(string, string, int, int, int);
 	void Atacar(Personaje& enemigo);
 	int Scan(const vector<Personaje>& personajes);
-	bool ScanIndividual(string matriz[25][40], int x, int y);
+	bool ScanIndividual(string matriz[25][40]);
 	void RecibirDaño(int);
 	void Destruir();
 	void AumentarVida(int);
-	void Moverse();
+	std::string** Moverse(std::string matriz[25][40]);
 	void AsignarEquipamiento(int);
 };
 

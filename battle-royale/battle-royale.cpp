@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <string>
 
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
@@ -31,7 +34,6 @@ int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	return x;
 }
 
-
 int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	int x;
 
@@ -39,12 +41,12 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	vector<string> opciones = {
 		"Espada (Ataque 2)",
 		"Escudo (Defensa 3)",
-		"Capa ignífuga (Defensa 1)",
+		"Capa ignifuga (Defensa 1)",
 		"Red antiflechas (Defensa 2)",
 		"Arco encantado (Ataque 1)",
 		"Mazo (Ataque 2)",
 		"Amuleto (Defensa 1)",
-		"Poción de rabia (Ataque 2)"
+		"Pocion de rabia (Ataque 2)"
 	};
 
 	cout << "Elige su equipamiento:\n";
@@ -68,6 +70,35 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	return x;
 }
 
+void imprimirMatriz(std::string matriz[25][40]) {
+	for (int i = 0; i < 25; i++) {//col
+		for (int j = 0; j < 40; j++) {
+
+			std::cout << matriz[i][j];
+		}
+		std::cout << std::endl;  // Salto de línea al terminar cada fila
+	}
+	
+}
+
+void comprobarAtaque(string matriz[25][40], const vector<Personaje>& personajes) {
+	//COMPROBAR ATAQUE
+	// Por cada personaje, comprobar si hay enemigos alrededor
+	// Si los hay, atacar
+	// Si mueren, eliminarlos del vector y de la matriz
+	// (esto puede ir en el main o en una función aparte)
+
+
+	for (auto& p : personajes)
+	{
+		//bool hayAlgo = p.ScanIndividual(matriz);
+	}
+
+	
+	
+}
+
+
 int main()
 {
 	string matriz[25][40];
@@ -84,9 +115,7 @@ int main()
 			else {
 				matriz[i][j] = "  ";
 			}
-			//std::cout << matriz[i][j];
 		}
-		//std::cout << std::endl;  // Salto de línea al terminar cada fila
 	}
 
 	//Input
@@ -141,6 +170,7 @@ int main()
 
 
 
+	system("cls");
 
 	Equipamiento espada = Equipamiento(1, "Espada", 2, 0);
 	Equipamiento escudo = Equipamiento(2, "Escudo", 0, 3);
@@ -169,23 +199,72 @@ int main()
 		p.x = rand() % 23 + 1; // entre 1 y 23
 		p.y = rand() % 38 + 1; // entre 1 y 38
 	}
-	//esto es el bucle de turnos donde todos se mueven, vali?
-	while (personajes.size() > 1)
+
+
+	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
+	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
+	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
+	for (int i = 0; i < cantidadArquera; i++) personajes.push_back(arquera);
+	for (int i = 0; i < cantidadDragones; i++) personajes.push_back(dragon);
+	for (int i = 0; i < cantidadVampiros; i++) personajes.push_back(vampiro);
+
+	
+	//////////// ASIGNAR POSICIONES INICIALES /////////////
+
+	for (auto& p : personajes)
 	{
-		// Mover a todos
-		for (auto& p : personajes)
+		bool hayAlgo = true;
+
+		// Buscar una posición vacía
+		while (hayAlgo)
 		{
-			p.Moverse();
+			p.x = rand() % 23 + 1; // entre 1 y 23
+			p.y = rand() % 38 + 1; // entre 1 y 38
+
+			hayAlgo = p.ScanIndividual(matriz);
 		}
-		cout << "\n--- TURNO ---\n";
-		for (auto& p : personajes)
-		{
-			cout << p.GetAlias() << " -> (" << p.x << "," << p.y << ")\n";
-		}
-		system("pause");
+
+		// Si sale del while, la posición está libre
+		matriz[p.x][p.y] = " " + p.GetAlias();
 	}
 
-	// COMBATE: revisar cada personaje PERO NECESITO ACCEDER A LA VIDA
+	//Dibujar matriz inicial
+	imprimirMatriz(matriz);
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+
+	//////////// END ASIGNAR POSICIONES INICIALES /////////////
+	
+	
+
+
+	///////////// EMPEZAR MOVIMIENTO /////////////
+	while (true) {
+		system("cls");
+
+		//Si hay alguien al lado atacar hasta que se muera. Si no hay nadie, se mueve
+		comprobarAtaque(matriz, personajes);
+		//movimiento
+		for (auto& p : personajes)
+		{
+			p.Moverse(matriz);
+		}
+
+
+		
+		imprimirMatriz(matriz);
+
+
+		//esperar 2s
+		std::this_thread::sleep_for(std::chrono::seconds(5));
+	}
+	//////////// END MOVIMIENTO /////////////
+	
+
+
+
+	 
+	 // COMBATE: revisar cada personaje PERO NECESITO ACCEDER A LA VIDA
 	//for (int i = 0; i < personajes.size(); i++)
 	//{
 	//	Personaje& p = personajes[i];
@@ -203,69 +282,10 @@ int main()
 	//		personajes.erase(remove_if(personajes.begin(), personajes.end(),[](const Personaje& pj) { return pj.vida <= 0; }),personajes.end());
 	//	}
 	//}
-
-
-	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
-	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
-	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
-	for (int i = 0; i < cantidadArquera; i++) personajes.push_back(arquera);
-	for (int i = 0; i < cantidadDragones; i++) personajes.push_back(dragon);
-	for (int i = 0; i < cantidadVampiros; i++) personajes.push_back(vampiro);
-
+	 
 	
-	//OLAIA
-
-	for (auto& p : personajes)
-	{
-		std::cout << "escaneando " + p.GetAlias() + "\n";
-		bool hayAlgo = true;
-
-		// Buscar una posición vacía
-		while (hayAlgo)
-		{
-			p.x = rand() % 23 + 1; // entre 1 y 23
-			p.y = rand() % 38 + 1; // entre 1 y 38
-
-			hayAlgo = p.ScanIndividual(matriz, p.x, p.y);
-		}
-
-		// Si sale del while, la posición está libre
-		matriz[p.x][p.y] = " " + p.GetAlias();
-	}
-
-	//Dibujar matriz inicial
-	for (int i = 0; i < 25; i++) {//col
-		for (int j = 0; j < 40; j++) {
-
-			std::cout << matriz[i][j];
-		}
-		std::cout << std::endl;  // Salto de línea al terminar cada fila
-	}
-
-
-
-
-
-
-
-	//esto es el bucle de turnos donde todos se mueven, vali?
-	while (personajes.size() > 1)
-	{
-		// Mover a todos
-		for (auto& p : personajes)
-		{
-			p.Moverse();
-		}
-		cout << "\n--- TURNO ---\n";
-		for (auto& p : personajes)
-		{
-			cout << p.GetAlias() << " -> (" << p.x << "," << p.y << ")\n";
-		}
-		system("pause");
-	}
-
-	
-
 	return 0;
 }
+
+
 
