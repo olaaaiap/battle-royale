@@ -131,6 +131,7 @@ void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int& 
 
 int main()
 {
+	srand(time(NULL));
 	string matriz[25][40];
 	
 
