@@ -12,6 +12,23 @@
 
 using namespace std;
 
+void imprimirMenuInicial() {
+	cout << R"(
+
+		______  ___ _____ _____ _      _____  ______ _______   _____   _      _____ 
+		| ___ \/ _ \_   _|_   _| |    |  ___| | ___ \  _  \ \ / / _ \ | |    |  ___|
+		| |_/ / /_\ \| |   | | | |    | |__   | |_/ / | | |\ V / /_\ \| |    | |__  
+		| ___ \  _  || |   | | | |    |  __|  |    /| | | | \ /|  _  || |    |  __| 
+		| |_/ / | | || |   | | | |____| |___  | |\ \\ \_/ / | || | | || |____| |___ 
+		\____/\_| |_/\_/   \_/ \_____/\____/  \_| \_|\___/  \_/\_| |_/\_____/\____/ 
+                                                                            
+                                                                            
+                                                                                                                                                                                                                                                                                      
+    )" << endl;
+
+
+	cout << " \n\n------------------------ CONFIGURA LA PARTIDA ------------------------ \n\n" << endl;
+}
 int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	int x;
 
@@ -19,18 +36,24 @@ int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	string nombreUpper = nombre;
 	transform(nombreUpper.begin(), nombreUpper.end(), nombreUpper.begin(), ::toupper);
 
-	cout << nombreUpper << " (Ataque: " << ataque << "; Vida: " << vida << ")\n";
+	cout << "\n\n" << nombreUpper << "\n";
+	cout << "  Ataque: " << ataque << "\n";
+	cout << "  Vida:   " << vida << "\n\n";
+
 	cout << "Cuantos quieres? ";
 	cin >> x;
 
 	while (x > max) {
 		cout << "El numero maximo por cada tipo es " << max << "!!\n";
-		cout << nombreUpper << " (Ataque: " << ataque << "; Vida: " << vida << ")\n";
+		cout << "\n\n" << nombreUpper << "\n";
+		cout << "  Ataque: " << ataque << "\n";
+		cout << "  Vida:   " << vida << "\n\n";
+
 		cout << "Cuantos quieres? ";
 		cin >> x;
 	}
 
-	cout << "Cantidad de " << nombre << "s: " << x << "\n\n";
+	//cout << "Cantidad de " << nombre << "s: " << x << "\n\n";
 	return x;
 }
 
@@ -49,7 +72,7 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 		"Pocion de rabia (Ataque 2)"
 	};
 
-	cout << "Elige su equipamiento:\n";
+	cout << "\nElige su equipamiento:\n";
 
 	// Mostrar solo las opciones NO usadas
 	for (int i = 0; i < opciones.size(); i++) {
@@ -63,7 +86,7 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	// Validación: que exista y que NO esté usado
 	while (x < 1 || x > opciones.size() ||
 		find(listaUsados.begin(), listaUsados.end(), x) != listaUsados.end()) {
-		cout << "Opción no válida, elige otra: ";
+		cout << "Opcion no valida, elige otra: ";
 		cin >> x;
 	}
 
@@ -81,21 +104,28 @@ void imprimirMatriz(std::string matriz[25][40]) {
 	
 }
 
-void comprobarAtaque(string matriz[25][40], const vector<Personaje>& personajes) {
-	//COMPROBAR ATAQUE
-	// Por cada personaje, comprobar si hay enemigos alrededor
-	// Si los hay, atacar
-	// Si mueren, eliminarlos del vector y de la matriz
-	// (esto puede ir en el main o en una función aparte)
-
-
+void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
+	
+	int idcolindante = -1;
 	for (auto& p : personajes)
 	{
-		//bool hayAlgo = p.ScanIndividual(matriz);
+		if (p.GetVida() <= 0) continue; //si está muerto no ataca
+		p.atacando = p.ScanIndividual(matriz, personajes, idcolindante);
+		if (idcolindante != -1) {
+			Personaje& enemigo = personajes[idcolindante - 1];
+			int vidaAntes = enemigo.GetVida();
+			p.Atacar(enemigo, matriz);
+			if (vidaAntes > 0 && enemigo.GetVida() <= 0) { // acaba de morir
+				if (enemigo.GetAlias() == "G") cantidadGuerreros--;
+				else if (enemigo.GetAlias() == "M") cantidadMagos--;
+				else if (enemigo.GetAlias() == "O") cantidadOgros--;
+				else if (enemigo.GetAlias() == "A") cantidadArquera--;
+				else if (enemigo.GetAlias() == "D") cantidadDragones--;
+				else if (enemigo.GetAlias() == "V") cantidadVampiros--;
+			}
+		}
 	}
-
-	
-	
 }
 
 
@@ -136,7 +166,7 @@ int main()
 
 	
 	vector<int> usados = {}; // espada y capa ya usadas
-
+	imprimirMenuInicial();
 	int cantidadTotal = 0;
 	cantidadGuerreros = imprimirRequestPersonaje("Guerrero", 4, 16, 40);
 	cantidadTotal += cantidadGuerreros;
@@ -181,32 +211,67 @@ int main()
 	Equipamiento amuleto = Equipamiento(7, "Amuleto", 0, 1);
 	Equipamiento pocionDeRabia = Equipamiento(8, "Poción de rabia", 2, 0);
 
+	Equipamiento equipamientos[] = {
+		espada,
+		escudo,
+		capaIgnifuga,
+		redAntiflechas,
+		arcoEncantado,
+		mazo,
+		amuleto,
+		pocionDeRabia
+	};
 
-	//Esto luego irá en un for, después de que el usuario configure la partida
-	Personaje guerrero = Personaje("Guerrero","G", 4, 16, 0);
-	Personaje mago = Personaje("Mago", "M", 5, 10, 0);
-	Personaje ogro = Personaje("Ogro", "O", 4, 20, 0);
-	Personaje arquera = Personaje("Arquera","A", 4, 11, 0);
-	Personaje dragon = Personaje("Dragon","D", 5, 18, 0);
-	Personaje vampiro = Personaje("Vampiro","V", 4, 13, 0);
+	Equipamiento equipGObj = equipamientos[equipamientoG - 1];
+	Equipamiento equipMObj = equipamientos[equipamientoM - 1];
+	Equipamiento equipOObj = equipamientos[equipamientoO - 1];
+	Equipamiento equipAObj = equipamientos[equipamientoA - 1];
+	Equipamiento equipDObj = equipamientos[equipamientoD - 1];
+	Equipamiento equipVObj = equipamientos[equipamientoV - 1];
+
+
+	Personaje guerrero = Personaje("Guerrero","G", 4 + equipGObj.ataque, 16 + equipGObj.vida, 0);
+	Personaje mago = Personaje("Mago", "M", 5 + equipMObj.ataque, 10 + equipMObj.vida, 0);
+	Personaje ogro = Personaje("Ogro", "O", 4 + equipOObj.ataque, 20 + equipOObj.vida, 0);
+	Personaje arquera = Personaje("Arquera","A", 4 + equipAObj.ataque, 11 + equipAObj.vida, 0);
+	Personaje dragon = Personaje("Dragon","D", 5 + equipDObj.ataque, 18 + equipDObj.vida, 0);
+	Personaje vampiro = Personaje("Vampiro","V", 4 + equipVObj.ataque, 13 + equipVObj.vida, 0);
 
 	vector<Personaje> personajes;
 
-	srand(time(NULL)); //esto es la semilla aleatoria
-	//esto es para asignar las posiciones de los personajes(borrar si ya lo ha hecho Olaia)
-	for (auto& p : personajes)
-	{
-		p.x = rand() % 23 + 1; // entre 1 y 23
-		p.y = rand() % 38 + 1; // entre 1 y 38
+	int idHelper = 1;
+
+	for (int i = 0; i < cantidadGuerreros; i++) {
+		guerrero.SetId(idHelper); 
+		idHelper++; 
+		personajes.push_back(guerrero);
+	}
+	for (int i = 0; i < cantidadMagos; i++) {
+		mago.SetId(idHelper); 
+		idHelper++; 
+		personajes.push_back(mago);
 	}
 
-
-	for (int i = 0; i < cantidadGuerreros; i++) personajes.push_back(guerrero);
-	for (int i = 0; i < cantidadMagos; i++) personajes.push_back(mago);
-	for (int i = 0; i < cantidadOgros; i++) personajes.push_back(ogro);
-	for (int i = 0; i < cantidadArquera; i++) personajes.push_back(arquera);
-	for (int i = 0; i < cantidadDragones; i++) personajes.push_back(dragon);
-	for (int i = 0; i < cantidadVampiros; i++) personajes.push_back(vampiro);
+	for (int i = 0; i < cantidadOgros; i++) {
+		ogro.SetId(idHelper);
+		idHelper++;
+		personajes.push_back(ogro);
+	}
+	for (int i = 0; i < cantidadArquera; i++) {
+		arquera.SetId(idHelper);
+		idHelper++;
+		personajes.push_back(arquera);
+	}
+	for (int i = 0; i < cantidadDragones; i++) {
+		dragon.SetId(idHelper);
+		idHelper++;
+		personajes.push_back(dragon);
+	}
+	for (int i = 0; i < cantidadVampiros; i++) {
+		vampiro.SetId(idHelper);
+		idHelper++;
+		personajes.push_back(vampiro);
+	}
 
 	
 	//////////// ASIGNAR POSICIONES INICIALES /////////////
@@ -221,7 +286,7 @@ int main()
 			p.x = rand() % 23 + 1; // entre 1 y 23
 			p.y = rand() % 38 + 1; // entre 1 y 38
 
-			hayAlgo = p.ScanIndividual(matriz);
+			hayAlgo = p.ScanIndividualInicial(matriz);
 		}
 
 		// Si sale del while, la posición está libre
@@ -242,21 +307,46 @@ int main()
 	while (true) {
 		system("cls");
 
-		//Si hay alguien al lado atacar hasta que se muera. Si no hay nadie, se mueve
-		comprobarAtaque(matriz, personajes);
+		
 		//movimiento
 		for (auto& p : personajes)
 		{
-			p.Moverse(matriz);
+			if (p.atacando == false) {
+				p.Moverse(matriz);
+			}
 		}
 
+		//Si hay alguien al lado atacar hasta que se muera. Si no hay nadie, se mueve
+		comprobarAtaque(matriz, personajes,cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
 		
 		imprimirMatriz(matriz);
 
+		cout << "\n------------------------ Cantidad de personajes vivos ------------------------\n\n";
+		cout << "Guerreros: " << cantidadGuerreros << "    Magos: " << cantidadMagos << "    Ogros: " << cantidadOgros << "    Arqueras: " << cantidadArquera << "    Dragones: " << cantidadDragones << "    Vampiros: " << cantidadVampiros <<  endl;
+	
+		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros +
+			cantidadArquera + cantidadDragones + cantidadVampiros;
 
-		//esperar 2s
-		std::this_thread::sleep_for(std::chrono::seconds(5));
+		if (totalVivos <= 1) {
+			cout << "\n¡El juego ha terminado!\n";
+
+			// Mostrar quién ganó
+			if (cantidadGuerreros) cout << "Ganador: Guerrero\n";
+			else if (cantidadMagos) cout << "Ganador: Mago\n";
+			else if (cantidadOgros) cout << "Ganador: Ogro\n";
+			else if (cantidadArquera) cout << "Ganador: Arquera\n";
+			else if (cantidadDragones) cout << "Ganador: Dragón\n";
+			else if (cantidadVampiros) cout << "Ganador: Vampiro\n";
+
+			break;  // rompe el while(true)
+		}
+		else {
+			//esperar 5s
+			std::this_thread::sleep_for(std::chrono::seconds(5));
+		}
+
+
 	}
 	//////////// END MOVIMIENTO /////////////
 	
@@ -264,24 +354,6 @@ int main()
 
 
 	 
-	 // COMBATE: revisar cada personaje PERO NECESITO ACCEDER A LA VIDA
-	//for (int i = 0; i < personajes.size(); i++)
-	//{
-	//	Personaje& p = personajes[i];
-	//	int enemigoIndex = p.Scan(personajes);
-	//	if (enemigoIndex != -1)
-	//	{
-	//		Personaje& enemigo = personajes[enemigoIndex];
-	//		while (p.vida > 0 && enemigo.vida > 0)
-	//		{
-	//			p.Atacar(enemigo);
-	//			if (enemigo.vida <= 0) break;
-	//			enemigo.Atacar(p);
-	//		}
-	//		// eliminar a los muertos del vector
-	//		personajes.erase(remove_if(personajes.begin(), personajes.end(),[](const Personaje& pj) { return pj.vida <= 0; }),personajes.end());
-	//	}
-	//}
 	 
 	
 	return 0;

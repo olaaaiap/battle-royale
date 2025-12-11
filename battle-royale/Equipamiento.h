@@ -11,9 +11,9 @@ class Equipamiento
 {
 	int codigo;
 	string nombre;
+public:
 	int ataque;
 	int vida;
-public:
 	Equipamiento(int, string, int, int);
 };
 

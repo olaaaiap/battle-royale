@@ -8,6 +8,7 @@ using namespace std;
 
 class Personaje
 {
+	int id;
 	string nombre;
 	string alias;
 	int ataque;
@@ -34,16 +35,22 @@ public:
 	{ 
 		return alias; 
 	}
+	void SetId(int i) 
+	{ 
+		id = i; 
+	}
 
 	int x;
 	int y;
+	bool atacando = false;
 	
 	Personaje(string, string, int, int, int);
-	void Atacar(Personaje& enemigo);
+	void Atacar(Personaje& enemigo, string matriz[25][40]);
 	int Scan(const vector<Personaje>& personajes);
-	bool ScanIndividual(string matriz[25][40]);
+	bool ScanIndividual(string matriz[25][40], const vector<Personaje>& personajes, int& idColindante);
+	bool ScanIndividualInicial(string matriz[25][40]);
 	void RecibirDaño(int);
-	void Destruir();
+	void Destruir(string matriz[25][40]);
 	void AumentarVida(int);
 	std::string** Moverse(std::string matriz[25][40]);
 	void AsignarEquipamiento(int);

@@ -15,13 +15,12 @@ Personaje::Personaje(string nombreP, string aliasP, int ataqueP, int vidaP, int 
 }
 
 
-void Personaje::Atacar(Personaje& enemigo)
+void Personaje::Atacar(Personaje& enemigo, string matriz[25][40])
 {
 	enemigo.RecibirDaño(ataque);
-
 	if (enemigo.vida <= 0)
 	{
-		enemigo.Destruir();
+		enemigo.Destruir(matriz);
 	}
 }
 
@@ -48,29 +47,72 @@ int Personaje::Scan(const vector<Personaje>& personajes)
 	return -1; // no hay enemigo cerca
 }
 
-bool Personaje::ScanIndividual(string matriz[25][40])
+bool Personaje::ScanIndividual(string matriz[25][40], const vector<Personaje>& personajes, int& idColindante)
+{
+	idColindante = -1;
+	if (matriz[x+1][y] != "  ") {
+		for (const auto& p : personajes) {
+			if (p.x == x + 1 && p.y == y) {
+				idColindante = p.id;   
+				return true;
+			}
+		}
+	}
+	
+	if (matriz[x][y+1] != "  ") {
+		for (const auto& p : personajes) {
+			if (p.x == x && p.y == y + 1) {
+				idColindante = p.id;
+				return true;
+			}
+		}
+	}
+	
+	if (matriz[x-1][y] != "  ") {
+		for (const auto& p : personajes) {
+			if (p.x == x - 1 && p.y == y) {
+				idColindante = p.id;
+				return true;
+			}
+		}
+	} 
+	
+	if (matriz[x][y - 1] != "  ") {
+		for (const auto& p : personajes) {
+			if (p.x == x && p.y == y - 1) {
+				idColindante = p.id;
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+
+bool Personaje::ScanIndividualInicial(string matriz[25][40])
 {
 	//En la posición
 	if (matriz[x][y] != "  ") {
 		return true;
 	}
 	//A la derecha
-	if (matriz[x+1][y] != "  ") {
+	if (matriz[x + 1][y] != "  ") {
 		return true;
 	}
 	//Arriba
-	if (matriz[x][y+1] != "  ") {
+	if (matriz[x][y + 1] != "  ") {
 		return true;
 	}
 	//Izquierda
-	if (matriz[x-1][y] != "  ") {
+	if (matriz[x - 1][y] != "  ") {
 		return true;
-	} 
+	}
 	//Abajo
 	if (matriz[x - 1][y] != "  ") {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -80,10 +122,10 @@ void Personaje::RecibirDaño(int daño)
 	vida -= daño;
 }
 
-void Personaje::Destruir() 
+void Personaje::Destruir(string matriz[25][40])
 {
 	vida = 0;
-	//cout << el personaje << " ha sido eliminado.\n";
+	matriz[x][y] = "  ";
 	
 }
 
@@ -93,6 +135,7 @@ void Personaje::AumentarVida(int cantVida)
 }
 
 std::string** Personaje::Moverse(std::string matriz[25][40]) {
+	
 	int xInicial = x;
 	int yInicial = y;
 	bool hayAlgo = true;
