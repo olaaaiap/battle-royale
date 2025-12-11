@@ -316,7 +316,6 @@ int main()
 			}
 		}
 
-		//Si hay alguien al lado atacar hasta que se muera. Si no hay nadie, se mueve
 		comprobarAtaque(matriz, personajes,cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
 		
@@ -331,7 +330,6 @@ int main()
 		if (totalVivos <= 1) {
 			cout << "\n¡El juego ha terminado!\n";
 
-			// Mostrar quién ganó
 			if (cantidadGuerreros) cout << "Ganador: Guerrero\n";
 			else if (cantidadMagos) cout << "Ganador: Mago\n";
 			else if (cantidadOgros) cout << "Ganador: Ogro\n";
@@ -339,10 +337,9 @@ int main()
 			else if (cantidadDragones) cout << "Ganador: Dragón\n";
 			else if (cantidadVampiros) cout << "Ganador: Vampiro\n";
 
-			break;  // rompe el while(true)
+			break;  
 		}
 		else {
-			//esperar 5s
 			std::this_thread::sleep_for(std::chrono::seconds(5));
 		}
 
