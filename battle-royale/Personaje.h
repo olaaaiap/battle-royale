@@ -43,6 +43,7 @@ public:
 	int x;
 	int y;
 	bool atacando = false;
+	bool irAlCentro = false;
 	
 	Personaje(string, string, int, int, int);
 	void Atacar(Personaje& enemigo, string matriz[25][40]);
@@ -53,6 +54,7 @@ public:
 	void Destruir(string matriz[25][40]);
 	void AumentarVida(int);
 	std::string** Moverse(std::string matriz[25][40]);
+	void MoverseHacia(int tx, int ty, std::string matriz[25][40]);
 	void AsignarEquipamiento(int);
 };
 

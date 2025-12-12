@@ -142,30 +142,30 @@ std::string** Personaje::Moverse(std::string matriz[25][40]) {
 	int cantIntentos = 0;
 
 	
-		while (hayAlgo) {
-			//Inicializar x e y para que no se mueva mas de 1 posición
-			x = xInicial;
-			y = yInicial;
-			int dir = rand() % 4; // 0=arriba, 1=abajo, 2=izq, 3=der
+	while (hayAlgo) {
+		//Inicializar x e y para que no se mueva mas de 1 posición
+		x = xInicial;
+		y = yInicial;
+		int dir = rand() % 4; // 0=arriba, 1=abajo, 2=izq, 3=der
 
-			switch (dir) {
-			case 0: if (x > 0) x--; break;
-			case 1: if (x < 24) x++; break;
-			case 2: if (y > 0) y--; break;
-			case 3: if (y < 39) y++; break;
-			}
-
-			if (matriz[x][y] == "  ") {
-				hayAlgo = false;
-			}
-
-			if (cantIntentos > 10) {
-				// no se mueve
-				hayAlgo = false;
-			}
-
-			cantIntentos++;
+		switch (dir) {
+		case 0: if (x > 0) x--; break;
+		case 1: if (x < 24) x++; break;
+		case 2: if (y > 0) y--; break;
+		case 3: if (y < 39) y++; break;
 		}
+
+		if (matriz[x][y] == "  ") {
+			hayAlgo = false;
+		}
+
+		if (cantIntentos > 10) {
+			// no se mueve
+			hayAlgo = false;
+		}
+
+		cantIntentos++;
+	}
 
 	if (cantIntentos <= 10) {
 		matriz[x][y] = " " + alias;
@@ -182,56 +182,44 @@ std::string** Personaje::Moverse(std::string matriz[25][40]) {
 }
 
 
+void Personaje::MoverseHacia(int centroX, int centroY, std::string matriz[25][40]) {
+	if (vida <= 0) return;
 
-//std::string(&Personaje::Moverse(std::string matriz[25][40], int xInicial, int yInicial))[25][40]
-//{
-//	bool hayAlgo = true;
-//	int cantIntentos = 0;
-//	while (hayAlgo) {
-//		//Lógica de movimiento
-//		int dir = rand() % 4; // 0=arriba, 1=abajo, 2=izq, 3=der
-//
-//		switch (dir)
-//		{
-//		case 0: // ir para arriba
-//			if (x > 1) x--;
-//			break;
-//		case 1: // ir para abajo
-//			if (x < 23) x++;
-//			break;
-//		case 2: // ir para la izquierda
-//			if (y > 1) y--;
-//			break;
-//		case 3: // ir para al derecha
-//			if (y < 38) y++;
-//			break;
-//		}
-//
-//		if (matriz[x][y] == "  ") {
-//			hayAlgo = false;
-//		}
-//
-//		if (cantIntentos > 10) {
-//			//no se mueve
-//			hayAlgo = false;
-//		}
-//		cantIntentos++;
-//	}
-//
-//	if (cantIntentos <= 10) {
-//		matriz[x][y] = " " + alias;
-//		matriz[xInicial][yInicial] = "  ";
-//	}
-//	//Si ha recibido daño, aumentar vida al moverse
-//	if (vida < vidaMax) 
-//	{
-//		AumentarVida(1);
-//	}
-//
-//
-//
-//	return matriz;
-//}
+	int movimientoX = 0;
+	int movimientoY = 0;
+	if (x < centroX) movimientoX = 1;
+	else if (x > centroX) movimientoX = -1;
+	if (y < centroY) movimientoY = 1;
+	else if (y > centroY) movimientoY = -1;
+
+	// Preferir mover en x o en y según ocupación:
+	// Intentar mover en x primero
+	if (movimientoX != 0) {
+		int nx = x + movimientoX;
+		int ny = y;
+		// comprobar que la casilla esté libre (dos espacios o borde interior)
+		if (matriz[nx][ny] == "  ") {
+			matriz[x][y] = "  ";
+			x = nx;
+			y = ny;
+			matriz[x][y] = " " + alias;
+			return;
+		}
+	}
+
+	if (movimientoY != 0) {
+		int nx = x;
+		int ny = y + movimientoY;
+		if (matriz[nx][ny] == "  ") {
+			matriz[x][y] = "  ";
+			x = nx;
+			y = ny;
+			matriz[x][y] = " " + alias;
+			return;
+		}
+	}
+
+}
 
 
 

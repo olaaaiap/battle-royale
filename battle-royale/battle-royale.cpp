@@ -12,6 +12,17 @@
 
 using namespace std;
 
+//Area de juego
+int limSuperior = 1;
+int limInferior = 23;
+int limIzquierda = 1;
+int limDerecha = 38;
+
+int ronda = 1;
+const int rondasParaCierre = 4;
+bool aviso = false;
+int rondasParaAviso = 2;
+
 void imprimirMenuInicial() {
 	cout << R"(
 
@@ -97,7 +108,12 @@ void imprimirMatriz(std::string matriz[25][40]) {
 	for (int i = 0; i < 25; i++) {//col
 		for (int j = 0; j < 40; j++) {
 
-			std::cout << matriz[i][j];
+			if ((i < limSuperior || i > limInferior || j < limIzquierda || j > limDerecha) && j!=0 && j!=39 && i!=0 && i!=24) {
+                std::cout << "##";
+            } else {
+                std::cout << matriz[i][j];
+            }
+
 		}
 		std::cout << std::endl;  // Salto de línea al terminar cada fila
 	}
@@ -128,9 +144,34 @@ void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int& 
 	}
 }
 
+void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
+	int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
+
+	for (auto& p : personajes) {
+		if (p.GetVida() <= 0) continue;
+		if (p.x < limSuperior || p.x > limInferior || p.y < limIzquierda || p.y > limDerecha) {
+			p.Destruir(matriz);
+
+			string alias = p.GetAlias();
+			if (alias == "G") cantidadGuerreros--;
+			else if (alias == "M") cantidadMagos--;
+			else if (alias == "O") cantidadOgros--;
+			else if (alias == "A") cantidadArquera--;
+			else if (alias == "D") cantidadDragones--;
+			else if (alias == "V") cantidadVampiros--;
+
+			matriz[p.x][p.y] = "  ";
+		}
+	}
+}
+
 
 int main()
 {
+	
+
+
 	srand(time(NULL));
 	string matriz[25][40];
 	
@@ -308,14 +349,60 @@ int main()
 	while (true) {
 		system("cls");
 
-		
-		//movimiento
-		for (auto& p : personajes)
-		{
-			if (p.atacando == false) {
-				p.Moverse(matriz);
+
+		ronda++;
+		cout << "\nRONDA " << ronda << "\n";
+		// comprobación de aviso o cierre segun ronda
+		int modulo = ronda % rondasParaCierre;
+
+		if (modulo == (rondasParaCierre - rondasParaAviso)) { 
+			aviso = true;
+			// Marcar personajes para que se muevan al centro: si están fuera de la futura zona segura deben ir
+			int nuevoLimSuperior = limSuperior + 1;
+			int nuevoLimIzquierda = limIzquierda + 1;
+			int nuevoLimInferior = limInferior - 1;
+			int nuevoLimDerecha = limDerecha - 1;
+
+			for (auto& p : personajes) {
+				if (p.GetVida() <= 0) continue;
+				if (p.x < nuevoLimSuperior || p.x > nuevoLimInferior || p.y < nuevoLimIzquierda || p.y > nuevoLimDerecha) {
+					p.irAlCentro = true; 
+				}
 			}
 		}
+
+		if (modulo == 0 && ronda != 0) {
+			limSuperior += 1;
+			limIzquierda += 1;
+			limInferior -= 1;
+			limDerecha -= 1;
+
+			cerrarArea(matriz, personajes, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
+
+			aviso = false; 
+			for (auto& p : personajes) {
+				p.irAlCentro = false;
+			}
+
+			//cout << "\nEl área se ha reducido. Nuevos límites: top=" << top << " bottom=" << bottom << " left=" << left << " right=" << right << "\n";
+		}
+
+		// MOVIMIENTO
+		for (auto& p : personajes) {
+			if (p.GetVida() <= 0) continue;
+			if (p.atacando == false) {
+				if (p.irAlCentro) {
+					// mover 1 paso hacia el centro (necesitamos Personaje::MoverHacia)
+					int centroX = (limSuperior + limInferior) / 2;
+					int centroY = (limIzquierda + limDerecha) / 2;
+					p.MoverseHacia(centroX, centroY, matriz); // ver implementación propuesta abajo
+				}
+				else {
+					p.Moverse(matriz);
+				}
+			}
+		}
+
 
 		comprobarAtaque(matriz, personajes,cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
@@ -324,18 +411,19 @@ int main()
 
 		cout << "\n------------------------ Cantidad de personajes vivos ------------------------\n\n";
 		cout << "Guerreros: " << cantidadGuerreros << "    Magos: " << cantidadMagos << "    Ogros: " << cantidadOgros << "    Arqueras: " << cantidadArquera << "    Dragones: " << cantidadDragones << "    Vampiros: " << cantidadVampiros <<  endl;
+		cout << "TOTAL: " << cantidadGuerreros+ cantidadMagos + cantidadOgros + cantidadArquera + cantidadDragones + cantidadVampiros <<  endl;
 	
 		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros +
 			cantidadArquera + cantidadDragones + cantidadVampiros;
 
 		if (totalVivos <= 1) {
-			cout << "\n¡El juego ha terminado!\n";
+			cout << "\nEl juego ha terminado!\n";
 
 			if (cantidadGuerreros) cout << "Ganador: Guerrero\n";
 			else if (cantidadMagos) cout << "Ganador: Mago\n";
 			else if (cantidadOgros) cout << "Ganador: Ogro\n";
 			else if (cantidadArquera) cout << "Ganador: Arquera\n";
-			else if (cantidadDragones) cout << "Ganador: Dragón\n";
+			else if (cantidadDragones) cout << "Ganador: Dragon\n";
 			else if (cantidadVampiros) cout << "Ganador: Vampiro\n";
 
 			break;  
