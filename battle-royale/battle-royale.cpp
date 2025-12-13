@@ -18,8 +18,8 @@ int limIzquierda = 1;
 int limDerecha = 38;
 
 int ronda = 1;
-const int rondasParaCierre = 4;
-const int rondasParaAviso = 2;
+const int rondasParaCierre = 8;
+const int rondasParaAviso = 3;
 
 
 /// @brief Lee, valida y devuelve el texto introducido por el usuario.
@@ -57,8 +57,15 @@ static void imprimirMenuInicial() {
                                                                                                                                                                                                                                                                                       
     )" << endl;
 
+	cout << "Bienvenido al campo de batalla, valiente jugador!\n\n"
+		<< "Aqui podras organizar tu ejercito y decidir la disposicion inicial de tus personajes.\n"
+		<< "Como buen comandante, sabras que la estrategia es la clave para determinar quien se lleva la victoria\n"
+		<< "Ten en cuenta que si el campo de batalla se reduce demasiado, cabe la posibilidad de que todos mueran!\n"
+		<< "Tip: juega en pantalla completa para la mejor experiencia.\n\n"
+		<< "Que empiece la aventura!\n\n";
 
-	cout << " \n\n------------------------ CONFIGURA LA PARTIDA ------------------------ \n\n" << endl;
+
+	cout << " \n------------------------ CONFIGURA LA PARTIDA ------------------------ " << endl;
 }
 
 /// @brief Imprime la información del personaje y solicita la cantidad deseada por cada uno.
@@ -140,6 +147,28 @@ static void imprimirMatriz(std::string matriz[25][40]) {
 	}
 }
 
+/// @brief Imprime las cantidades totales de personajes vivos.
+/// @param cantidadGuerreros - Cantidad de guerreros vivos.
+/// @param cantidadMagos - Cantidad de magos vivos.
+/// @param cantidadOgros - Cantidad de ogros vivos.
+/// @param cantidadArqueras - Cantidad de arqueras vivas.
+/// @param cantidadDragones - Cantidad de dragones vivos.
+/// @param cantidadVampiros - Cantidad de vampiros vivos.
+static void imprimirTotales(int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+	int& cantidadArqueras, int& cantidadDragones, int& cantidadVampiros) {
+	cout << "\n------------------------ Cantidad de personajes vivos ------------------------\n\n";
+	cout << "Guerreros: " << cantidadGuerreros << "    Magos: " << cantidadMagos << "    Ogros: " << cantidadOgros << "    Arqueras: " << cantidadArqueras << "    Dragones: " << cantidadDragones << "    Vampiros: " << cantidadVampiros << endl;
+	cout << "TOTAL: " << cantidadGuerreros + cantidadMagos + cantidadOgros + cantidadArqueras + cantidadDragones + cantidadVampiros << endl;
+
+}
+
+/// @brief Imprime el contador de ronda actual.
+/// @param ronda - La ronda actual.
+static void imprimirContadorRonda(int& ronda) {
+	cout << " ---------------------------\n";
+	cout << "          Ronda " << ronda << "         \n";
+	cout << " ---------------------------\n";
+}
 
 /// @brief Comprueba y realiza los ataques entre personajes colindantes.
 /// 
@@ -152,12 +181,12 @@ static void imprimirMatriz(std::string matriz[25][40]) {
 /// @param cantidadGuerreros - Cantidad de guerreros vivos.
 /// @param cantidadMagos - Cantidad de magos vivos.
 /// @param cantidadOgros - Cantidad de ogros vivos.
-/// @param cantidadArquera - Cantidad de arqueras vivas.
+/// @param cantidadArqueras - Cantidad de arqueras vivas.
 /// @param cantidadDragones - Cantidad de dragones vivos.
 /// @param cantidadVampiros - Cantidad de vampiros vivos.
 /// 
 static void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
-	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
+	int& cantidadArqueras, int& cantidadDragones, int& cantidadVampiros) {
 	
 	int idcolindante = -1;
 	for (auto& p : personajes)
@@ -172,7 +201,7 @@ static void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes
 				if (enemigo.GetAlias() == "G") cantidadGuerreros--;
 				else if (enemigo.GetAlias() == "M") cantidadMagos--;
 				else if (enemigo.GetAlias() == "O") cantidadOgros--;
-				else if (enemigo.GetAlias() == "A") cantidadArquera--;
+				else if (enemigo.GetAlias() == "A") cantidadArqueras--;
 				else if (enemigo.GetAlias() == "D") cantidadDragones--;
 				else if (enemigo.GetAlias() == "V") cantidadVampiros--;
 
@@ -193,13 +222,13 @@ static void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes
 /// @param cantidadGuerreros - Cantidad de guerreros vivos.
 /// @param cantidadMagos - Cantidad de magos vivos.
 /// @param cantidadOgros - Cantidad de ogros vivos.
-/// @param cantidadArquera - Cantidad de arqueras vivas.
+/// @param cantidadArqueras - Cantidad de arqueras vivas.
 /// @param cantidadDragones - Cantidad de dragones vivos.
 /// @param cantidadVampiros - Cantidad de vampiros vivos.
 /// 
 static void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 	int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
-	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
+	int& cantidadArqueras, int& cantidadDragones, int& cantidadVampiros) {
 
 	for (int i = 1; i < 24; i++) {
 		for (int j = 1; j < 39; j++) {
@@ -215,6 +244,7 @@ static void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 		if (p.GetX() < limSuperior || p.GetX() > limInferior || p.GetY() < limIzquierda || p.GetY() > limDerecha) {
 			p.Destruir(matriz, matrizDeIds);
 
+
 			if (p.GetX() >= 1 && p.GetX() <= 23 && p.GetY() >= 1 && p.GetY() <= 38) {
 				matriz[p.GetX()][p.GetY()] = "##";
 				matrizDeIds[p.GetX()][p.GetY()] = -2;
@@ -224,7 +254,7 @@ static void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 			if (alias == "G") cantidadGuerreros--;
 			else if (alias == "M") cantidadMagos--;
 			else if (alias == "O") cantidadOgros--;
-			else if (alias == "A") cantidadArquera--;
+			else if (alias == "A") cantidadArqueras--;
 			else if (alias == "D") cantidadDragones--;
 			else if (alias == "V") cantidadVampiros--;
 		}
@@ -259,7 +289,7 @@ int main()
 	int cantidadGuerreros;
 	int cantidadMagos;
 	int cantidadOgros;
-	int cantidadArquera;
+	int cantidadArqueras;
 	int cantidadDragones;
 	int cantidadVampiros;
 	int equipamientoG;
@@ -288,8 +318,8 @@ int main()
 	equipamientoO= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoO);
 
-	cantidadArquera = imprimirRequestPersonaje("Arquera", 4, 11, 40);
-	cantidadTotal += cantidadArquera;
+	cantidadArqueras = imprimirRequestPersonaje("Arquera", 4, 11, 40);
+	cantidadTotal += cantidadArqueras;
 	equipamientoA= imprimirRequestEquipamiento(usados);
 	usados.push_back(equipamientoA);
 
@@ -362,7 +392,7 @@ int main()
 		idHelper++;
 		personajes.push_back(ogro);
 	}
-	for (int i = 0; i < cantidadArquera; i++) {
+	for (int i = 0; i < cantidadArqueras; i++) {
 		arquera.SetId(idHelper);
 		idHelper++;
 		personajes.push_back(arquera);
@@ -396,9 +426,13 @@ int main()
 		matriz[p.GetX()][p.GetY()] = " " + p.GetAlias();
 	}
 
+	imprimirContadorRonda(ronda);
+
 	imprimirMatriz(matriz);
 
-	std::this_thread::sleep_for(std::chrono::seconds(5));
+	imprimirTotales(cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
+
+	std::this_thread::sleep_for(std::chrono::seconds(3));
 	
 
 	while (true) {
@@ -406,7 +440,10 @@ int main()
 
 
 		ronda++;
-		cout << "\nRONDA " << ronda << "\n";
+
+		imprimirContadorRonda(ronda);
+
+
 		int modulo = ronda % rondasParaCierre;
 
 		if (modulo == (rondasParaCierre - rondasParaAviso)) { 
@@ -429,7 +466,7 @@ int main()
 			limInferior -= 1;
 			limDerecha -= 1;
 
-			cerrarArea(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
+			cerrarArea(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
 
 			for (auto& p : personajes) {
 				p.SetIrAlCentro(false);
@@ -452,31 +489,30 @@ int main()
 		}
 
 
-		comprobarAtaque(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
+		comprobarAtaque(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
 
 		
 		imprimirMatriz(matriz);
 
-		cout << "\n------------------------ Cantidad de personajes vivos ------------------------\n\n";
-		cout << "Guerreros: " << cantidadGuerreros << "    Magos: " << cantidadMagos << "    Ogros: " << cantidadOgros << "    Arqueras: " << cantidadArquera << "    Dragones: " << cantidadDragones << "    Vampiros: " << cantidadVampiros <<  endl;
-		cout << "TOTAL: " << cantidadGuerreros+ cantidadMagos + cantidadOgros + cantidadArquera + cantidadDragones + cantidadVampiros <<  endl;
-	
-		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros + cantidadArquera + cantidadDragones + cantidadVampiros;
+		imprimirTotales(cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
+
+		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros + cantidadArqueras + cantidadDragones + cantidadVampiros;
 
 		if (totalVivos <= 1) {
-			cout << "\nEl juego ha terminado!\n";
+			cout << "\nEl juego ha terminado!\n\n";
 
-			if (cantidadGuerreros) cout << "Ganador: Guerrero\n";
-			else if (cantidadMagos) cout << "Ganador: Mago\n";
-			else if (cantidadOgros) cout << "Ganador: Ogro\n";
-			else if (cantidadArquera) cout << "Ganador: Arquera\n";
-			else if (cantidadDragones) cout << "Ganador: Dragon\n";
-			else if (cantidadVampiros) cout << "Ganador: Vampiro\n";
-
+			if (cantidadGuerreros) cout << "Ganador: Guerrero\n\n\n";
+			else if (cantidadMagos) cout << "Ganador: Mago\n\n\n";
+			else if (cantidadOgros) cout << "Ganador: Ogro\n\n\n";
+			else if (cantidadArqueras) cout << "Ganador: Arquera\n\n\n";
+			else if (cantidadDragones) cout << "Ganador: Dragon\n\n\n";
+			else if (cantidadVampiros) cout << "Ganador: Vampiro\n\n\n";
+			else cout << "Todos han muerto!\n\n\n";
+			
 			break;  
 		}
 		else {
-			std::this_thread::sleep_for(std::chrono::seconds(5));
+			std::this_thread::sleep_for(std::chrono::seconds(3));
 		}
 	}
 	return 0;

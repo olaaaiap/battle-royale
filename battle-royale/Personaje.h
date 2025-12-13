@@ -29,6 +29,10 @@ public:
 	{ 
 		return alias; 
 	}
+	std::string GetNombre() 
+	{ 
+		return nombre; 
+	}
 	int GetAtaque() const
 	{ 
 		return ataque; 
