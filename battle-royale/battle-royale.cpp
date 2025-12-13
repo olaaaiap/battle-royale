@@ -19,12 +19,17 @@ int limDerecha = 38;
 
 int ronda = 1;
 const int rondasParaCierre = 4;
-bool aviso = false;
-int rondasParaAviso = 2;
+const int rondasParaAviso = 2;
 
 
-
-int leetInputEntero() {
+/// @brief Lee, valida y devuelve el texto introducido por el usuario.
+/// 
+/// Esta función solicita al usuario un numero a través de la entrada estándar 
+/// y comprueba que sea un número entero.
+/// Si el usuario inserta un valor no válido, se le vuelve a solicitar hasta que lo haga correctamente.
+/// 
+/// @return El número entero introducido por el usuario.
+static int leetInputEntero() {
 	int x;
 	while (true) {
 		if (cin >> x) {
@@ -36,7 +41,9 @@ int leetInputEntero() {
 	}
 }
 
-void imprimirMenuInicial() {
+/// @brief Imprime el menú inicial del juego.
+/// 
+static void imprimirMenuInicial() {
 	cout << R"(
 
 		______  ___ _____ _____ _      _____  ______ _______   _____   _      _____ 
@@ -53,7 +60,14 @@ void imprimirMenuInicial() {
 
 	cout << " \n\n------------------------ CONFIGURA LA PARTIDA ------------------------ \n\n" << endl;
 }
-int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
+
+/// @brief Imprime la información del personaje y solicita la cantidad deseada por cada uno.
+/// @param nombre - Nombre del personaje.
+/// @param ataque - Valor de ataque del personaje.
+/// @param vida - Cantidad de vidas que tiene el personaje
+/// @param max - Cantidad máxima permitida por cada tipo de personaje.
+/// @return Cantidad de personajes seleccionados.
+static int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	int x;
 
 	string nombreUpper = nombre;
@@ -79,7 +93,10 @@ int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	return x;
 }
 
-int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
+/// @brief Imprime las opciones de equipamiento y solicita una opción para aplicar al personaje.
+/// @param listaUsados - Vector con los índices de los equipamientos ya utilizados.
+/// @return Índice del equipamiento seleccionado.
+static int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	int x;
 
 	vector<string> opciones = {
@@ -112,7 +129,9 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	return x;
 }
 
-void imprimirMatriz(std::string matriz[25][40]) {
+/// @brief Imprime la matriz en la consola.
+/// @param matriz - Matriz a imprimir.
+static void imprimirMatriz(std::string matriz[25][40]) {
 	for (int i = 0; i < 25; i++) {
 		for (int j = 0; j < 40; j++) {
 			std::cout << matriz[i][j];
@@ -122,15 +141,29 @@ void imprimirMatriz(std::string matriz[25][40]) {
 }
 
 
-
-void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+/// @brief Comprueba y realiza los ataques entre personajes colindantes.
+/// 
+/// La función obtiene datos de la partida y por cad apersonaje analiza si está colindante a otro.
+/// Si es así, realiza el ataque y actualiza las cantidades de personajes vivos (solo si el enemigo ha muerto).
+/// 
+/// @param matriz - Matriz del juego.
+/// @param personajes - Vector de personajes en el juego.
+/// @param matrizDeIds - Matriz de IDs de personajes.
+/// @param cantidadGuerreros - Cantidad de guerreros vivos.
+/// @param cantidadMagos - Cantidad de magos vivos.
+/// @param cantidadOgros - Cantidad de ogros vivos.
+/// @param cantidadArquera - Cantidad de arqueras vivas.
+/// @param cantidadDragones - Cantidad de dragones vivos.
+/// @param cantidadVampiros - Cantidad de vampiros vivos.
+/// 
+static void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
 	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
 	
 	int idcolindante = -1;
 	for (auto& p : personajes)
 	{
 		if (p.GetVida() <= 0) continue; 
-		p.atacando = p.ScanIndividual(matrizDeIds, idcolindante);
+		p.SetAtacando(p.ScanIndividual(matrizDeIds, idcolindante));
 		if (idcolindante != -1 && idcolindante != -2) {
 			Personaje& enemigo = personajes[idcolindante - 1];
 			int vidaAntes = enemigo.GetVida();
@@ -149,7 +182,22 @@ void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int m
 	}
 }
 
-void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
+/// @brief Reduce el área de juego y elimina los personajes que se hayan quedado fuera de los límites.
+/// 
+/// La función cambia la matriz general y la matriz de ids para reflejar el nuevo area de juego. 
+/// También destruye los personajes que se hayan quedado fuera y actualiza los totales.
+/// 
+/// @param matriz - Matriz del juego.
+/// @param personajes - Vector de personajes en el juego.
+/// @param matrizDeIds - Matriz de IDs de personajes.
+/// @param cantidadGuerreros - Cantidad de guerreros vivos.
+/// @param cantidadMagos - Cantidad de magos vivos.
+/// @param cantidadOgros - Cantidad de ogros vivos.
+/// @param cantidadArquera - Cantidad de arqueras vivas.
+/// @param cantidadDragones - Cantidad de dragones vivos.
+/// @param cantidadVampiros - Cantidad de vampiros vivos.
+/// 
+static void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 	int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
 	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
 
@@ -164,12 +212,12 @@ void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 
 	for (auto& p : personajes) {
 		if (p.GetVida() <= 0) continue;
-		if (p.x < limSuperior || p.x > limInferior || p.y < limIzquierda || p.y > limDerecha) {
+		if (p.GetX() < limSuperior || p.GetX() > limInferior || p.GetY() < limIzquierda || p.GetY() > limDerecha) {
 			p.Destruir(matriz, matrizDeIds);
 
-			if (p.x >= 1 && p.x <= 23 && p.y >= 1 && p.y <= 38) {
-				matriz[p.x][p.y] = "##";
-				matrizDeIds[p.x][p.y] = -2;
+			if (p.GetX() >= 1 && p.GetX() <= 23 && p.GetY() >= 1 && p.GetY() <= 38) {
+				matriz[p.GetX()][p.GetY()] = "##";
+				matrizDeIds[p.GetX()][p.GetY()] = -2;
 			}
 
 			string alias = p.GetAlias();
@@ -287,12 +335,12 @@ int main()
 	Equipamiento equipVObj = equipamientos[equipamientoV - 1];
 
 
-	Personaje guerrero = Personaje("Guerrero","G", 4 + equipGObj.ataque, 16 + equipGObj.vida, 0);
-	Personaje mago = Personaje("Mago", "M", 5 + equipMObj.ataque, 10 + equipMObj.vida, 0);
-	Personaje ogro = Personaje("Ogro", "O", 4 + equipOObj.ataque, 20 + equipOObj.vida, 0);
-	Personaje arquera = Personaje("Arquera","A", 4 + equipAObj.ataque, 11 + equipAObj.vida, 0);
-	Personaje dragon = Personaje("Dragon","D", 5 + equipDObj.ataque, 18 + equipDObj.vida, 0);
-	Personaje vampiro = Personaje("Vampiro","V", 4 + equipVObj.ataque, 13 + equipVObj.vida, 0);
+	Personaje guerrero = Personaje("Guerrero","G", 4 + equipGObj.GetAtaque(), 16 + equipGObj.GetVida(), 0);
+	Personaje mago = Personaje("Mago", "M", 5 + equipMObj.GetAtaque(), 10 + equipMObj.GetVida(), 0);
+	Personaje ogro = Personaje("Ogro", "O", 4 + equipOObj.GetAtaque(), 20 + equipOObj.GetVida(), 0);
+	Personaje arquera = Personaje("Arquera","A", 4 + equipAObj.GetAtaque(), 11 + equipAObj.GetVida(), 0);
+	Personaje dragon = Personaje("Dragon","D", 5 + equipDObj.GetAtaque(), 18 + equipDObj.GetVida(), 0);
+	Personaje vampiro = Personaje("Vampiro","V", 4 + equipVObj.GetAtaque(), 13 + equipVObj.GetVida(), 0);
 
 	vector<Personaje> personajes;
 
@@ -337,15 +385,15 @@ int main()
 
 		while (hayAlgo)
 		{
-			p.x = rand() % 23 + 1; 
-			p.y = rand() % 38 + 1; 
+			p.SetX(rand() % 23 + 1);
+			p.SetY(rand() % 38 + 1);
 
 			hayAlgo = p.ScanIndividualInicial(matrizDeIds);
 		}
 
-		matrizDeIds[p.x][p.y] = p.GetId(); 
+		matrizDeIds[p.GetX()][p.GetY()] = p.GetId(); 
 		
-		matriz[p.x][p.y] = " " + p.GetAlias();
+		matriz[p.GetX()][p.GetY()] = " " + p.GetAlias();
 	}
 
 	imprimirMatriz(matriz);
@@ -362,7 +410,6 @@ int main()
 		int modulo = ronda % rondasParaCierre;
 
 		if (modulo == (rondasParaCierre - rondasParaAviso)) { 
-			aviso = true;
 			int nuevoLimSuperior = limSuperior + 1;
 			int nuevoLimIzquierda = limIzquierda + 1;
 			int nuevoLimInferior = limInferior - 1;
@@ -370,8 +417,8 @@ int main()
 
 			for (auto& p : personajes) {
 				if (p.GetVida() <= 0) continue;
-				if (p.x < nuevoLimSuperior || p.x > nuevoLimInferior || p.y < nuevoLimIzquierda || p.y > nuevoLimDerecha) {
-					p.irAlCentro = true; 
+				if (p.GetX() < nuevoLimSuperior || p.GetX() > nuevoLimInferior || p.GetY() < nuevoLimIzquierda || p.GetY() > nuevoLimDerecha) {
+					p.SetIrAlCentro(true);
 				}
 			}
 		}
@@ -384,17 +431,16 @@ int main()
 
 			cerrarArea(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
-			aviso = false; 
 			for (auto& p : personajes) {
-				p.irAlCentro = false;
+				p.SetIrAlCentro(false);
 			}
 
 		}
 
 		for (auto& p : personajes) {
 			if (p.GetVida() <= 0) continue;
-			if (p.atacando == false) {
-				if (p.irAlCentro) {
+			if (p.GetAtacando() == false) {
+				if (p.GetIrAlCentro()) {
 					int centroX = (limSuperior + limInferior) / 2;
 					int centroY = (limIzquierda + limDerecha) / 2;
 					p.MoverseHacia(centroX, centroY, matriz, matrizDeIds, p.GetId()); // ver implementación propuesta abajo
