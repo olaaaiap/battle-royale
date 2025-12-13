@@ -3,25 +3,18 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
 
 
 class Personaje
 {
 	int id;
-	string nombre;
-	string alias;
+	std::string nombre;
+	std::string alias;
 	int ataque;
 	int vida;
 	int vidaMax;
 	int equipamiento;
 public:
-
-	/*int GetVida() const;
-	int GetAtaque() const;
-	void SetVida(int v);
-	*/
-
 
 	int GetVida() 
 	{ 
@@ -31,9 +24,13 @@ public:
 	{ 
 		return ataque; 
 	}
-	string GetAlias() 
+	std::string GetAlias() 
 	{ 
 		return alias; 
+	}
+	int GetId()
+	{
+		return id;
 	}
 	void SetId(int i) 
 	{ 
@@ -45,16 +42,15 @@ public:
 	bool atacando = false;
 	bool irAlCentro = false;
 	
-	Personaje(string, string, int, int, int);
-	void Atacar(Personaje& enemigo, string matriz[25][40]);
-	int Scan(const vector<Personaje>& personajes);
-	bool ScanIndividual(string matriz[25][40], const vector<Personaje>& personajes, int& idColindante);
-	bool ScanIndividualInicial(string matriz[25][40]);
+	Personaje(std::string, std::string, int, int, int);
+	void Atacar(Personaje& enemigo, std::string matriz[25][40]);
+	bool ScanIndividual(int matrizDeIds[25][40], int& idColindante);
+	bool ScanIndividualInicial(int matrizDeIds[25][40]);
 	void RecibirDaño(int);
-	void Destruir(string matriz[25][40]);
+	void Destruir(std::string matriz[25][40], int matrizDeIds[25][40]);
 	void AumentarVida(int);
-	std::string** Moverse(std::string matriz[25][40]);
-	void MoverseHacia(int tx, int ty, std::string matriz[25][40]);
+	void Moverse(std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje);
+	void MoverseHacia(int direccionX, int direccionY, std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje);
 	void AsignarEquipamiento(int);
 };
 

@@ -12,7 +12,6 @@
 
 using namespace std;
 
-//Area de juego
 int limSuperior = 1;
 int limInferior = 23;
 int limIzquierda = 1;
@@ -22,6 +21,20 @@ int ronda = 1;
 const int rondasParaCierre = 4;
 bool aviso = false;
 int rondasParaAviso = 2;
+
+
+
+int leetInputEntero() {
+	int x;
+	while (true) {
+		if (cin >> x) {
+			return x;
+		}
+		cout << "Opcion no valida, elige otra: ";
+		cin.clear();
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+}
 
 void imprimirMenuInicial() {
 	cout << R"(
@@ -43,7 +56,6 @@ void imprimirMenuInicial() {
 int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	int x;
 
-	// Convertir nombre a mayúsculas
 	string nombreUpper = nombre;
 	transform(nombreUpper.begin(), nombreUpper.end(), nombreUpper.begin(), ::toupper);
 
@@ -52,7 +64,7 @@ int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 	cout << "  Vida:   " << vida << "\n\n";
 
 	cout << "Cuantos quieres? ";
-	cin >> x;
+	x = leetInputEntero();
 
 	while (x > max) {
 		cout << "El numero maximo por cada tipo es " << max << "!!\n";
@@ -61,17 +73,15 @@ int imprimirRequestPersonaje(string nombre, int ataque, int vida, int max) {
 		cout << "  Vida:   " << vida << "\n\n";
 
 		cout << "Cuantos quieres? ";
-		cin >> x;
+		x = leetInputEntero();
 	}
 
-	//cout << "Cantidad de " << nombre << "s: " << x << "\n\n";
 	return x;
 }
 
 int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 	int x;
 
-	// Lista de textos
 	vector<string> opciones = {
 		"Espada (Ataque 2)",
 		"Escudo (Defensa 3)",
@@ -85,73 +95,82 @@ int imprimirRequestEquipamiento(const vector<int>& listaUsados) {
 
 	cout << "\nElige su equipamiento:\n";
 
-	// Mostrar solo las opciones NO usadas
 	for (int i = 0; i < opciones.size(); i++) {
 		if (find(listaUsados.begin(), listaUsados.end(), i + 1) == listaUsados.end()) {
 			cout << " " << i + 1 << ". " << opciones[i] << "\n";
 		}
 	}
 
-	cin >> x;
+	x = leetInputEntero();
 
-	// Validación: que exista y que NO esté usado
 	while (x < 1 || x > opciones.size() ||
 		find(listaUsados.begin(), listaUsados.end(), x) != listaUsados.end()) {
 		cout << "Opcion no valida, elige otra: ";
-		cin >> x;
+		x = leetInputEntero();
 	}
 
 	return x;
 }
 
 void imprimirMatriz(std::string matriz[25][40]) {
-	for (int i = 0; i < 25; i++) {//col
+	for (int i = 0; i < 25; i++) {
 		for (int j = 0; j < 40; j++) {
-
-			if ((i < limSuperior || i > limInferior || j < limIzquierda || j > limDerecha) && j!=0 && j!=39 && i!=0 && i!=24) {
-                std::cout << "##";
-            } else {
-                std::cout << matriz[i][j];
-            }
-
+			std::cout << matriz[i][j];
 		}
-		std::cout << std::endl;  // Salto de línea al terminar cada fila
+		std::cout << std::endl;  
 	}
-	
 }
 
-void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+
+
+void comprobarAtaque(string matriz[25][40], vector<Personaje>& personajes, int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
 	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
 	
 	int idcolindante = -1;
 	for (auto& p : personajes)
 	{
-		if (p.GetVida() <= 0) continue; //si está muerto no ataca
-		p.atacando = p.ScanIndividual(matriz, personajes, idcolindante);
-		if (idcolindante != -1) {
+		if (p.GetVida() <= 0) continue; 
+		p.atacando = p.ScanIndividual(matrizDeIds, idcolindante);
+		if (idcolindante != -1 && idcolindante != -2) {
 			Personaje& enemigo = personajes[idcolindante - 1];
 			int vidaAntes = enemigo.GetVida();
 			p.Atacar(enemigo, matriz);
-			if (vidaAntes > 0 && enemigo.GetVida() <= 0) { // acaba de morir
+			if (vidaAntes > 0 && enemigo.GetVida() <= 0) {
 				if (enemigo.GetAlias() == "G") cantidadGuerreros--;
 				else if (enemigo.GetAlias() == "M") cantidadMagos--;
 				else if (enemigo.GetAlias() == "O") cantidadOgros--;
 				else if (enemigo.GetAlias() == "A") cantidadArquera--;
 				else if (enemigo.GetAlias() == "D") cantidadDragones--;
 				else if (enemigo.GetAlias() == "V") cantidadVampiros--;
+
+				enemigo.Destruir(matriz, matrizDeIds);
 			}
 		}
 	}
 }
 
 void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
-	int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
+	int matrizDeIds[25][40], int& cantidadGuerreros, int& cantidadMagos, int& cantidadOgros,
 	int& cantidadArquera, int& cantidadDragones, int& cantidadVampiros) {
+
+	for (int i = 1; i < 24; i++) {
+		for (int j = 1; j < 39; j++) {
+			if ((i < limSuperior || i > limInferior || j < limIzquierda || j > limDerecha)) {
+				matriz[i][j] = "##";
+				matrizDeIds[i][j] = -2;
+			}
+		}
+	}
 
 	for (auto& p : personajes) {
 		if (p.GetVida() <= 0) continue;
 		if (p.x < limSuperior || p.x > limInferior || p.y < limIzquierda || p.y > limDerecha) {
-			p.Destruir(matriz);
+			p.Destruir(matriz, matrizDeIds);
+
+			if (p.x >= 1 && p.x <= 23 && p.y >= 1 && p.y <= 38) {
+				matriz[p.x][p.y] = "##";
+				matrizDeIds[p.x][p.y] = -2;
+			}
 
 			string alias = p.GetAlias();
 			if (alias == "G") cantidadGuerreros--;
@@ -160,8 +179,6 @@ void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 			else if (alias == "A") cantidadArquera--;
 			else if (alias == "D") cantidadDragones--;
 			else if (alias == "V") cantidadVampiros--;
-
-			matriz[p.x][p.y] = "  ";
 		}
 	}
 }
@@ -169,15 +186,14 @@ void cerrarArea(string matriz[25][40], vector<Personaje>& personajes,
 
 int main()
 {
-	
-
-
 	srand(time(NULL));
 	string matriz[25][40];
-	
+	int matrizDeIds[25][40];
 
-	for (int i = 0; i < 25; i++) {//col
+
+	for (int i = 0; i < 25; i++) {
 		for (int j = 0; j < 40; j++) {
+			matrizDeIds[i][j] = -1;
 			if (j == 0 || j == 39) {
 				matriz[i][j] = "|";
 			}
@@ -190,7 +206,6 @@ int main()
 		}
 	}
 
-	//Input
 	int x;
 	int max = 40;
 	int cantidadGuerreros;
@@ -207,7 +222,7 @@ int main()
 	int equipamientoV;
 
 	
-	vector<int> usados = {}; // espada y capa ya usadas
+	vector<int> usados = {}; 
 	imprimirMenuInicial();
 	int cantidadTotal = 0;
 	cantidadGuerreros = imprimirRequestPersonaje("Guerrero", 4, 16, 40);
@@ -315,49 +330,39 @@ int main()
 		personajes.push_back(vampiro);
 	}
 
-	
-	//////////// ASIGNAR POSICIONES INICIALES /////////////
 
 	for (auto& p : personajes)
 	{
 		bool hayAlgo = true;
 
-		// Buscar una posición vacía
 		while (hayAlgo)
 		{
-			p.x = rand() % 23 + 1; // entre 1 y 23
-			p.y = rand() % 38 + 1; // entre 1 y 38
+			p.x = rand() % 23 + 1; 
+			p.y = rand() % 38 + 1; 
 
-			hayAlgo = p.ScanIndividualInicial(matriz);
+			hayAlgo = p.ScanIndividualInicial(matrizDeIds);
 		}
 
-		// Si sale del while, la posición está libre
+		matrizDeIds[p.x][p.y] = p.GetId(); 
+		
 		matriz[p.x][p.y] = " " + p.GetAlias();
 	}
 
-	//Dibujar matriz inicial
 	imprimirMatriz(matriz);
 
 	std::this_thread::sleep_for(std::chrono::seconds(5));
-
-	//////////// END ASIGNAR POSICIONES INICIALES /////////////
-	
 	
 
-
-	///////////// EMPEZAR MOVIMIENTO /////////////
 	while (true) {
 		system("cls");
 
 
 		ronda++;
 		cout << "\nRONDA " << ronda << "\n";
-		// comprobación de aviso o cierre segun ronda
 		int modulo = ronda % rondasParaCierre;
 
 		if (modulo == (rondasParaCierre - rondasParaAviso)) { 
 			aviso = true;
-			// Marcar personajes para que se muevan al centro: si están fuera de la futura zona segura deben ir
 			int nuevoLimSuperior = limSuperior + 1;
 			int nuevoLimIzquierda = limIzquierda + 1;
 			int nuevoLimInferior = limInferior - 1;
@@ -377,34 +382,31 @@ int main()
 			limInferior -= 1;
 			limDerecha -= 1;
 
-			cerrarArea(matriz, personajes, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
+			cerrarArea(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
 			aviso = false; 
 			for (auto& p : personajes) {
 				p.irAlCentro = false;
 			}
 
-			//cout << "\nEl área se ha reducido. Nuevos límites: top=" << top << " bottom=" << bottom << " left=" << left << " right=" << right << "\n";
 		}
 
-		// MOVIMIENTO
 		for (auto& p : personajes) {
 			if (p.GetVida() <= 0) continue;
 			if (p.atacando == false) {
 				if (p.irAlCentro) {
-					// mover 1 paso hacia el centro (necesitamos Personaje::MoverHacia)
 					int centroX = (limSuperior + limInferior) / 2;
 					int centroY = (limIzquierda + limDerecha) / 2;
-					p.MoverseHacia(centroX, centroY, matriz); // ver implementación propuesta abajo
+					p.MoverseHacia(centroX, centroY, matriz, matrizDeIds, p.GetId()); // ver implementación propuesta abajo
 				}
 				else {
-					p.Moverse(matriz);
+					p.Moverse(matriz, matrizDeIds, p.GetId());
 				}
 			}
 		}
 
 
-		comprobarAtaque(matriz, personajes,cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
+		comprobarAtaque(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArquera, cantidadDragones, cantidadVampiros);
 
 		
 		imprimirMatriz(matriz);
@@ -413,8 +415,7 @@ int main()
 		cout << "Guerreros: " << cantidadGuerreros << "    Magos: " << cantidadMagos << "    Ogros: " << cantidadOgros << "    Arqueras: " << cantidadArquera << "    Dragones: " << cantidadDragones << "    Vampiros: " << cantidadVampiros <<  endl;
 		cout << "TOTAL: " << cantidadGuerreros+ cantidadMagos + cantidadOgros + cantidadArquera + cantidadDragones + cantidadVampiros <<  endl;
 	
-		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros +
-			cantidadArquera + cantidadDragones + cantidadVampiros;
+		int totalVivos = cantidadGuerreros + cantidadMagos + cantidadOgros + cantidadArquera + cantidadDragones + cantidadVampiros;
 
 		if (totalVivos <= 1) {
 			cout << "\nEl juego ha terminado!\n";
@@ -431,17 +432,7 @@ int main()
 		else {
 			std::this_thread::sleep_for(std::chrono::seconds(5));
 		}
-
-
 	}
-	//////////// END MOVIMIENTO /////////////
-	
-
-
-
-	 
-	 
-	
 	return 0;
 }
 
