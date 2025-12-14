@@ -125,10 +125,12 @@
   <ItemGroup>
     <ClCompile Include="battle-royale.cpp" />
     <ClCompile Include="Equipamiento.cpp" />
+    <ClCompile Include="Partida.cpp" />
     <ClCompile Include="Personaje.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Equipamiento.h" />
+    <ClInclude Include="Partida.h" />
     <ClInclude Include="TiposDeEquipamientos.h" />
     <ClInclude Include="TiposDePersonajes.h" />
     <ClInclude Include="Personaje.h" />
