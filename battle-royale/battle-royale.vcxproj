@@ -129,6 +129,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Equipamiento.h" />
+    <ClInclude Include="TiposDeEquipamientos.h" />
+    <ClInclude Include="TiposDePersonajes.h" />
     <ClInclude Include="Personaje.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

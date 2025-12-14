@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Equipamiento.h"
 #include "Personaje.h"
+#include "TiposDePersonajes.h"
+#include "TiposDeEquipamientos.h"
 
 #include <vector>
 #include <algorithm>
@@ -337,14 +339,14 @@ int main()
 
 	system("cls");
 
-	Equipamiento espada = Equipamiento(1, "Espada", 2, 0);
-	Equipamiento escudo = Equipamiento(2, "Escudo", 0, 3);
-	Equipamiento capaIgnifuga = Equipamiento(3, "Capa ignífuga", 0, 1);
-	Equipamiento redAntiflechas = Equipamiento(4, "Red antiflechas", 0, 3);
-	Equipamiento arcoEncantado = Equipamiento(5, "Arco encantado", 1, 0);
-	Equipamiento mazo = Equipamiento(6, "Mazo", 2, 0);
-	Equipamiento amuleto = Equipamiento(7, "Amuleto", 0, 1);
-	Equipamiento pocionDeRabia = Equipamiento(8, "Poción de rabia", 2, 0);
+	Espada espada = Espada();
+	Escudo escudo = Escudo();
+	CapaIgnifuga capaIgnifuga = CapaIgnifuga();
+	RedAntiflechas redAntiflechas = RedAntiflechas();
+	ArcoEncantado arcoEncantado = ArcoEncantado();
+	Mazo mazo = Mazo();
+	Amuleto amuleto = Amuleto();
+	PocionDeRabia pocionDeRabia = PocionDeRabia();
 
 	Equipamiento equipamientos[] = {
 		espada,
@@ -365,12 +367,12 @@ int main()
 	Equipamiento equipVObj = equipamientos[equipamientoV - 1];
 
 
-	Personaje guerrero = Personaje("Guerrero","G", 4 + equipGObj.GetAtaque(), 16 + equipGObj.GetVida(), 0);
-	Personaje mago = Personaje("Mago", "M", 5 + equipMObj.GetAtaque(), 10 + equipMObj.GetVida(), 0);
-	Personaje ogro = Personaje("Ogro", "O", 4 + equipOObj.GetAtaque(), 20 + equipOObj.GetVida(), 0);
-	Personaje arquera = Personaje("Arquera","A", 4 + equipAObj.GetAtaque(), 11 + equipAObj.GetVida(), 0);
-	Personaje dragon = Personaje("Dragon","D", 5 + equipDObj.GetAtaque(), 18 + equipDObj.GetVida(), 0);
-	Personaje vampiro = Personaje("Vampiro","V", 4 + equipVObj.GetAtaque(), 13 + equipVObj.GetVida(), 0);
+	Guerrero guerrero = Guerrero( 4 + equipGObj.GetAtaque(), 16 + equipGObj.GetVida());
+	Mago mago = Mago( 5 + equipMObj.GetAtaque(), 10 + equipMObj.GetVida());
+	Ogro ogro = Ogro( 4 + equipOObj.GetAtaque(), 20 + equipOObj.GetVida());
+	Arquera arquera = Arquera(4 + equipAObj.GetAtaque(), 11 + equipAObj.GetVida());
+	Dragon dragon = Dragon( 5 + equipDObj.GetAtaque(), 18 + equipDObj.GetVida());
+	Vampiro vampiro = Vampiro( 4 + equipVObj.GetAtaque(), 13 + equipVObj.GetVida());
 
 	vector<Personaje> personajes;
 
@@ -438,7 +440,6 @@ int main()
 	while (true) {
 		system("cls");
 
-
 		ronda++;
 
 		imprimirContadorRonda(ronda);
@@ -491,7 +492,6 @@ int main()
 
 		comprobarAtaque(matriz, personajes, matrizDeIds, cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
 
-		
 		imprimirMatriz(matriz);
 
 		imprimirTotales(cantidadGuerreros, cantidadMagos, cantidadOgros, cantidadArqueras, cantidadDragones, cantidadVampiros);
