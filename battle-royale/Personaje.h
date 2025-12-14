@@ -26,20 +26,20 @@ public:
 		return id;
 	}
 	std::string GetAlias() 
-	{ 
-		return alias; 
+	{
+		return alias;
 	}
 	std::string GetNombre() 
 	{ 
-		return nombre; 
+		return nombre;
 	}
 	int GetAtaque() const
 	{ 
-		return ataque; 
+		return ataque;
 	}
 	int GetVida() const
 	{ 
-		return vida; 
+		return vida;
 	}
 	int GetX() const
 	{
@@ -59,7 +59,7 @@ public:
 	}
 	void SetId(int i) 
 	{ 
-		id = i; 
+		id = i;
 	}
 	void SetX(int posx)
 	{

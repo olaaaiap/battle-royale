@@ -2,7 +2,8 @@
 
 
 
-Equipamiento::Equipamiento(int codigoE, string nombreE, int ataqueE, int vidaE) {
+Equipamiento::Equipamiento(int codigoE, string nombreE, int ataqueE, int vidaE) 
+{
 	codigo = codigoE;
 	nombre = nombreE;
 	ataque = ataqueE;

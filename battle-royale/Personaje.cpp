@@ -2,7 +2,8 @@
 
 
 
-Personaje::Personaje(std::string nombreP, std::string aliasP, int ataqueP, int vidaP, int equipamientoP) {
+Personaje::Personaje(std::string nombreP, std::string aliasP, int ataqueP, int vidaP, int equipamientoP) 
+{
 	id = -1;
 	nombre = nombreP;
 	alias = aliasP;
@@ -27,23 +28,27 @@ bool Personaje::ScanIndividual(int matrizDeIds[25][40], int& idColindante)
 	idColindante = -1;
 	
 
-	if(matrizDeIds[x + 1][y] != -1 && matrizDeIds[x + 1][y] != -2) {
+	if(matrizDeIds[x + 1][y] != -1 && matrizDeIds[x + 1][y] != -2) 
+	{
 		idColindante = matrizDeIds[x + 1][y];
 		return true;
 	}
 
-	if (matrizDeIds[x][y + 1] != -1 && matrizDeIds[x][y + 1] != -2) {
+	if (matrizDeIds[x][y + 1] != -1 && matrizDeIds[x][y + 1] != -2) 
+	{
 		idColindante = matrizDeIds[x][y + 1];
 		return true;
 	}
 	
-	if (matrizDeIds[x - 1][y] != -1 && matrizDeIds[x - 1][y] != -2) {
+	if (matrizDeIds[x - 1][y] != -1 && matrizDeIds[x - 1][y] != -2) 
+	{
 		idColindante = matrizDeIds[x - 1][y];
 		return true;
 	}
 	
 	
-	if (matrizDeIds[x][y - 1] != -1 && matrizDeIds[x][y - 1] != -2) {
+	if (matrizDeIds[x][y - 1] != -1 && matrizDeIds[x][y - 1] != -2) 
+	{
 		idColindante = matrizDeIds[x][y - 1];
 		return true;
 	}
@@ -55,19 +60,24 @@ bool Personaje::ScanIndividual(int matrizDeIds[25][40], int& idColindante)
 
 bool Personaje::ScanIndividualInicial(int matrizDeIds[25][40])
 {
-	if (matrizDeIds[x][y] != -1) {
+	if (matrizDeIds[x][y] != -1) 
+	{
 		return true;
 	}
-	if (matrizDeIds[x + 1][y] != -1) {
+	if (matrizDeIds[x + 1][y] != -1) 
+	{
 		return true;
 	}
-	if (matrizDeIds[x][y + 1] != -1) {
+	if (matrizDeIds[x][y + 1] != -1) 
+	{
 		return true;
 	}
-	if (matrizDeIds[x - 1][y] != -1) {
+	if (matrizDeIds[x - 1][y] != -1) 
+	{
 		return true;
 	}
-	if (matrizDeIds[x - 1][y] != -1) {
+	if (matrizDeIds[x - 1][y] != -1) 
+	{
 		return true;
 	}
 
@@ -92,7 +102,8 @@ void Personaje::AumentarVida(int cantVida)
 	vida += cantVida;
 }
 
-void Personaje::Moverse(std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje) {
+void Personaje::Moverse(std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje) 
+{
 	
 	int xInicial = x;
 	int yInicial = y;
@@ -100,24 +111,28 @@ void Personaje::Moverse(std::string matriz[25][40], int matrizDeIds[25][40], int
 	int cantIntentos = 0;
 
 	
-	while (hayAlgo) {
+	while (hayAlgo) 
+	{
 		x = xInicial;
 		y = yInicial;
 		int dir = rand() % 4;
 
 
-		switch (dir) {
+		switch (dir) 
+		{
 		case 0: if (x > 1) x--; break;
 		case 1: if (x < 23) x++; break;
 		case 2: if (y > 1) y--; break;
 		case 3: if (y < 38) y++; break;
 		}
 
-		if (matrizDeIds[x][y] == -1) {
+		if (matrizDeIds[x][y] == -1) 
+		{
 			hayAlgo = false;
 		}
 
-		if (cantIntentos > 10) {
+		if (cantIntentos > 10) 
+		{
 			x = xInicial;
 			y = yInicial;
 			hayAlgo = false;
@@ -126,21 +141,24 @@ void Personaje::Moverse(std::string matriz[25][40], int matrizDeIds[25][40], int
 		cantIntentos++;
 	}
 
-	if (cantIntentos <= 10) {
+	if (cantIntentos <= 10) 
+	{
 		matriz[x][y] = " " + alias;
 		matrizDeIds[x][y] = idPersonaje;
 		matriz[xInicial][yInicial] = "  ";
 		matrizDeIds[xInicial][yInicial] = -1;
 	}
 
-	if (vida < vidaMax) {
+	if (vida < vidaMax) 
+	{
 		AumentarVida(1);
 	}
 
 }
 
 
-void Personaje::MoverseHacia(int direccionX, int direccionY, std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje) {
+void Personaje::MoverseHacia(int direccionX, int direccionY, std::string matriz[25][40], int matrizDeIds[25][40], int idPersonaje) 
+{
 	if (vida <= 0) return;
 
 	int movimientoX = 0;
@@ -150,9 +168,11 @@ void Personaje::MoverseHacia(int direccionX, int direccionY, std::string matriz[
 	if (y < direccionY) movimientoY = 1;
 	else if (y > direccionY) movimientoY = -1;
 	
-	if (movimientoX != 0) {
+	if (movimientoX != 0) 
+	{
 		int nuevoX = x + movimientoX;
-		if (nuevoX > 0 && nuevoX < 24 && y > 0 && y < 39 && matrizDeIds[nuevoX][y] == -1) {
+		if (nuevoX > 0 && nuevoX < 24 && y > 0 && y < 39 && matrizDeIds[nuevoX][y] == -1) 
+		{
 			matrizDeIds[x][y] = -1;
 			matriz[x][y] = "  ";
 			x = nuevoX;
@@ -162,9 +182,11 @@ void Personaje::MoverseHacia(int direccionX, int direccionY, std::string matriz[
 		}
 	}
 
-	if (movimientoY != 0) {
+	if (movimientoY != 0) 
+	{
 		int nuevoY = y + movimientoY;
-		if (x > 0 && x < 24 && nuevoY > 0 && nuevoY < 39 && matrizDeIds[x][nuevoY] == -1) {
+		if (x > 0 && x < 24 && nuevoY > 0 && nuevoY < 39 && matrizDeIds[x][nuevoY] == -1) 
+		{
 
 			matrizDeIds[x][y] = -1;
 			matriz[x][y] = "  ";
