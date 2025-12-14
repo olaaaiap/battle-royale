@@ -9,7 +9,7 @@ Este proyecto consiste en una simulación por consola de *Battle Royale* desarro
 ## Descripción del juego
 En la partida participan personajes de distintos tipos (Guerrero, Mago, Ogro, Arquera, Dragón y Vampiro), que se colocan en un mapa representado mediante una matriz bidimensional. Cada personaje cuenta con atributos como vida, ataque y posición, y puede equiparse con diferentes objetos que modifican sus estadísticas, todos ellos mostrados en consola y personalizables.
 
-Durante cada turno, los personajes se mueven por el mapa, escanean su entorno y atacan a otros personajes cuando se encuentran en posiciones colindantes. La partida avanza de forma automática hasta que solo queda un personaje con vida, que es declarado ganador y la partida termina.
+Durante cada turno, los personajes se mueven por el mapa, escanean su entorno y atacan a otros personajes cuando se encuentran en posiciones colindantes. La partida avanza de forma automática hasta que solo queda un personaje con vida que es declarado ganador o todos mueran.
 
 Como elemento complicación en este Battle Royale, el mapa se va *reduciendo progresivamente*, obligando a los personajes a desplazarse hacia el centro y aumentando la frecuencia de los combates.
 
@@ -18,55 +18,55 @@ Como elemento complicación en este Battle Royale, el mapa se va *reduciendo pro
 
 Los principales objetivos de este proyecto son:
 
-- Diseñar y utilizar una *jerarquía de herencia* para modelar personajes y equipamientos.
-- Simular una partida completa de un juego tipo Battle Royale por turnos.
+- Crear un juego estilo Battle Royale que permita seleccionar un número de personajes y personalizarlos añadiendo equipamiento.
+- Diseñar la clase *Partida* que simulará la batalla.
+- Aplicar la herencia para crear diferentes tipos de personajes y equipamientos.
 - Implementar lógica de movimiento, combate y eliminación de personajes.
-- Crear una *interfaz por consola* sencilla que permita configurar e iniciar la partida.
-- Programar algoritmos que den realismo al juego, como la reducción progresiva del mapa como pasaría en un Battle Royale Moderno.
+- Crear una *interfaz por consola* para configurar y simular el juego.
 
 
 ## Estructura del proyecto
 
-El proyecto se ha estructurado de forma modular, separando responsabilidades en distintas clases y archivos para mejorar la claridad y el mantenimiento del código.
-
+El proyecto se ha estructurado pensando en la claridad y mantenimiento de código, separando diferentes responsabilidades en distintos archivos.
 
 - *battle-royale.cpp*  
-  Contiene la función main, desde donde se crea el objeto Partida y se inicia la ejecución del juego.
+  Contiene la función main, desde donde se crea el objeto Partida y se inicia el juego.
 
 - *Partida.h / .cpp*
-  Se encarga de configurar la partida, inicializar el mapa, gestionar los turnos, reducir el tamaño de la matriz y comprobar la condición de victoria.
+  Se encarga de configurar la partida, inicializar el mapa, gestionar los turnos, reducir el tamaño de la matriz y controlar el fin de la partida.
 
 - *Personaje.h / .cpp*  
   Representa a los jugadores del Battle Royale. Controla atributos como vida, ataque y posición, además de acciones como moverse, atacar y recibir daño.
 
 - *TiposDePersonajes.h*  
-  Clases como Guerrero, Mago, Ogro, Arquera, Dragon y Vampiro heredan de Personaje, permitiendo ampliar fácilmente el juego con nuevos tipos.
+  Clases como Guerrero, Mago, Ogro, Arquera, Dragon y Vampiro heredan de Personaje, permitiendo ampliar fácilmente el juego con nuevos tipos y facilitando el polimorfismo.
 
 - *Equipamiento.h / .cpp* 
-  Modela los objetos que pueden modificar las estadísticas de los personajes.
+  Estructura los objetos que pueden usar los personajes para aumentar su valor de ataque o defensa.
 
 - *TiposDeEquipamientos.h*  
-  Objetos como Espada, Escudo, ArcoEncantado o PocionDeRabia heredan de Equipamiento, aportando variedad y personalización.
+  Objetos como Espada, Escudo, ArcoEncantado o PocionDeRabia heredan de Equipamiento.
 
 ## Interfaz
 
-El juego cuenta con una *interfaz por consola sencilla e intuitiva.*
+El juego cuenta con una *interfaz por consola sencilla.*
 
-A través de menús de texto, el usuario puede:
-- Configurar la partida.
-- Seleccionar el número de personajes.
-- Elegir los tipos de personajes.
-- Asignar equipamiento.
+A través del menú, el usuario puede:
+- Seleccionar el número de personajes por cada tipo.
+- Elegir que equipamiento tendrá cada tipo.
+- Visualizar la partida y los totales.
 
-Durante la ejecución, el estado del juego se muestra mediante la matriz del mapa y mensajes informativos que indican los movimientos, ataques y eliminaciones.  
-Esta interfaz, aunque simple, permite seguir el desarrollo de la partida de forma clara y cumple con los requisitos del proyecto sin necesidad de interfaz gráfica.
+Durante la ejecución, el estado del juego se muestra mediante el numero de ronda, la matriz del mapa y el recuento de cada personaje.
 
-
-
-![Menú inicial](images/batlleRoyaleMainMenu.jpg)
+Esta interfaz simple permite llevar un seguimiento de lo que ocurre en la partida.
 
 
-## Organización general
+
+![Menú inicial](images/battleRoyaleMainMenu.jpg)
+![Menú inicial](images/battleRoyaleGame.jpg)
+
+
+## Organización general (por clases)
 
 ### Clase Partida
 
@@ -135,16 +135,16 @@ Gracias a esta estructura del mapa de juego, se ha conseguido reducir la complej
 
 ## Reducción progresiva de mapa
 
-Como _complicación extra_ para nuestro proyecto hemos añadido una reducción de la arena de combate, de manera que cualquier personaje que este fuera quede eliminado automáticamente. para ello, hemos creado la función **cerrarArea()** que va sobrescribiendo la parte mas externa del área con ## cada 8 rondas. Esto da un efecto de zona peligrosa o zona con tormenta. Internamente, en la matriz de ids se sustituyen los -1 que representan los espacios vacios del area, por -2 que representa la zona invadida por la tormenta. Además hemos implementado un booleano llamado **irAlCentro** que propicia que, cuando esta en **true**, el personaje intente acercarse al centro. Esto ocurre durante las 3 últimas rondas de las 8 debido a que son las rondas de aviso de que el mapa va a cerrarse.
+Como _complicación extra_ para nuestro proyecto hemos añadido una reducción de la arena de combate, de manera que cualquier personaje que esté fuera quede eliminado automáticamente. Para ello, hemos creado la función **cerrarArea()** ,el cual va sobrescribiendo la parte mas externa del área con ## cada 8 rondas. Esto da un efecto de zona peligrosa o zona con tormenta. Internamente, en la matriz de ids se sustituyen los -1 que representan los espacios vacios del area, por -2 que representa la zona invadida por la tormenta. Además hemos implementado un booleano llamado **irAlCentro** que propicia que, cuando su valor es **true**, el personaje intente acercarse al centro. Esto ocurre durante las 3 últimas rondas de las 8 debido a que son las rondas de aviso de que el mapa va a cerrarse.
 
 
 ## Sistema de combate
 
-Cuando dos personajes entran en contacto, comienzan un combate. Durante este duelo, ninguno de los dos se moverá hasta acabarlo, y el valor de ataque de cada uno se irá restando a la vida del otro una vez por ronda, lo cual acabará con la muerte de uno de ellos, o, en algunos casos, incluso de ambos. En caso de haber recibido daño, al estar fuera de combate los personajes recuperarán una pequeña cantidad de salud por ronda.
+Cuando dos personajes entran en contacto, comienzan un combate. Durante este duelo, ninguno de los dos se moverá hasta acabarlo, y el valor de ataque de cada uno se irá restando a la vida del otro, lo cual acabará con la muerte de uno de ellos, o, en algunos casos, incluso de ambos. En caso de haber recibido daño, y si no están dentro de un combate los personajes recuperarán una pequeña cantidad de salud cada vez que se muevan de posición.
 
 ## Final de la partida
 
-Cuando en la zona solo queda un personaje vivo (o ninguno), se procederá al final de la partida. La tormenta cesará y se anunciará el personaje ganador, o en caso de no haberlo, se indicará que todos han muerto.
+Cuando en la zona solo quede un personaje vivo (o ninguno), se procederá al final de la partida. La tormenta cesará y se anunciará el personaje ganador, o en caso de no haberlo, se indicará que todos han muerto.
 
 ## Ejecución
 
