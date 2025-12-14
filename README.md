@@ -1,2 +1,155 @@
-# battle-royale
-C++ Game for a Battle Royale style game
+
+
+
+# Battle Royale
+
+Este proyecto consiste en una simulación por consola de *Battle Royale* desarrollada en C++ donde participan múltiples personajes de distintas clases que se atacan hasta que quede uno o todos mueran.
+
+
+## Descripción del juego
+En la partida participan personajes de distintos tipos (Guerrero, Mago, Ogro, Arquera, Dragón y Vampiro), que se colocan en un mapa representado mediante una matriz bidimensional. Cada personaje cuenta con atributos como vida, ataque y posición, y puede equiparse con diferentes objetos que modifican sus estadísticas, todos ellos mostrados en consola y personalizables.
+
+Durante cada turno, los personajes se mueven por el mapa, escanean su entorno y atacan a otros personajes cuando se encuentran en posiciones colindantes. La partida avanza de forma automática hasta que solo queda un personaje con vida, que es declarado ganador y la partida termina.
+
+Como elemento complicación en este Battle Royale, el mapa se va *reduciendo progresivamente*, obligando a los personajes a desplazarse hacia el centro y aumentando la frecuencia de los combates.
+
+
+## Objetivos del proyecto
+
+Los principales objetivos de este proyecto son:
+
+- Diseñar y utilizar una *jerarquía de herencia* para modelar personajes y equipamientos.
+- Simular una partida completa de un juego tipo Battle Royale por turnos.
+- Implementar lógica de movimiento, combate y eliminación de personajes.
+- Crear una *interfaz por consola* sencilla que permita configurar e iniciar la partida.
+- Programar algoritmos que den realismo al juego, como la reducción progresiva del mapa como pasaría en un Battle Royale Moderno.
+
+
+## Estructura del proyecto
+
+El proyecto se ha estructurado de forma modular, separando responsabilidades en distintas clases y archivos para mejorar la claridad y el mantenimiento del código.
+
+
+- *battle-royale.cpp*  
+  Contiene la función main, desde donde se crea el objeto Partida y se inicia la ejecución del juego.
+
+- *Partida.h / .cpp*
+  Se encarga de configurar la partida, inicializar el mapa, gestionar los turnos, reducir el tamaño de la matriz y comprobar la condición de victoria.
+
+- *Personaje.h / .cpp*  
+  Representa a los jugadores del Battle Royale. Controla atributos como vida, ataque y posición, además de acciones como moverse, atacar y recibir daño.
+
+- *TiposDePersonajes.h*  
+  Clases como Guerrero, Mago, Ogro, Arquera, Dragon y Vampiro heredan de Personaje, permitiendo ampliar fácilmente el juego con nuevos tipos.
+
+- *Equipamiento.h / .cpp* 
+  Modela los objetos que pueden modificar las estadísticas de los personajes.
+
+- *TiposDeEquipamientos.h*  
+  Objetos como Espada, Escudo, ArcoEncantado o PocionDeRabia heredan de Equipamiento, aportando variedad y personalización.
+
+## Interfaz
+
+El juego cuenta con una *interfaz por consola sencilla e intuitiva.*
+
+A través de menús de texto, el usuario puede:
+- Configurar la partida.
+- Seleccionar el número de personajes.
+- Elegir los tipos de personajes.
+- Asignar equipamiento.
+
+Durante la ejecución, el estado del juego se muestra mediante la matriz del mapa y mensajes informativos que indican los movimientos, ataques y eliminaciones.  
+Esta interfaz, aunque simple, permite seguir el desarrollo de la partida de forma clara y cumple con los requisitos del proyecto sin necesidad de interfaz gráfica.
+
+![Menú inicial](images/batlleRoyaleMainMenu.jpg)
+
+
+
+## Organización general
+
+### Clase Partida
+
+* Inicializa el menú inicial y pide al usuario que elija los valores iniciales.
+
+* Gestiona los turnos y la coherencia del mapa.
+
+* Controla que el mapa se reduzca cada 8 rondas.
+
+* Termina la partida cuando quede un personaje o hayan muerto todos.
+
+#### Atributos:
+
+* `limSuperior`, `limInferior`, `limIzquierda`, `limDerecha`
+* `maxPersonajes`: Cantidad máxima de personajes que se pueden elegir por cada tipo.
+* `ronda`
+* `rondasParaCierre`: Cada cuantas rondas se aplicará el cierre del área de juego.
+* `rondasParaAviso`: Cuantas rondas antes se avisará a los personajes que se va a cerrar el área.
+* `matriz`
+* `matrizDeIds`: Matriz que guardará los ids de los personajes en sus correspondientes posiciones. 
+* `personajes`
+* `cantidadGuerreros`, `cantidadMagos`, `cantidadOgros`, `cantidadArqueras`, `cantidadDragones`, `cantidadVampiros`
+
+### Clase Personaje
+
+Define los atributos y métodos de los personajes y controla su movimiento y ataque.
+
+#### Atributos:
+
+* `id`: identificador del personaje
+* `nombre`, `alias`
+* `ataque`: valor de daño
+* `vida`, `vidaMax`
+* `equipamiento`
+* `x`, `y`: posición en el mapa
+
+### Clases Guerrero, Mago, Ogro, Arquera, Dragon, Vampiro
+Estas clases heredan de _Personaje_ e inicializan sus valores por defecto (vida, ataque y equipamiento) dependiendo del tipo de personaje y lo que haya escogido el usuario.
+
+### Clase Equipamiento
+Define los atributos de los equipamientos.
+
+#### Atributos:
+
+* `codigo`
+* `nombre`
+* `ataque`
+* `vida`
+
+### Clases Espada, Escudo, CapaIgnifuga, RedAntiflechas, ArcoEncantado, Mazo, Amuleto, PocionDeRabia
+Estas clases heredan de _Equipamiento_ e inicializan sus valores por defecto.
+
+
+## Mapa del juego
+
+El escenario se representa en una matriz 25x40, donde cada celda podrá tener el alias de un personaje o un espacio vacío. 
+Los personajes se mueven según los límites del mapa, los cuales se reducirán cada 8 rondas. 
+
+Para controlar fácilmente tanto los límites como los personajes adyacentes, se utiliza una matriz de identificadores (`matrizDeIds`) que almacena el id del personaje en su posición correspondiente. 
+
+Gracias a esta estructura del mapa de juego, se ha conseguido reducir la complejidad temporal del movimiento y búsquedas de  O(n²) a O(n).
+
+
+
+
+
+## Reducción progresiva de mapa
+
+Como *complicación extra* para nuestro proyecto hemos añadido una reducción de la arena de combate, de manera que cualquier personaje que este fuera quede eliminado automáticamente. para ello, hemos creado la función **cerrarArea()** que va sobrescribiendo la parte mas externa del área con ## cada 8 rondas. Esto da un efecto de zona peligrosa o zona con tormenta.
+Además hemos implementado un booleano llamado **irAlCentro** que propicia que, cuando esta en **true**, el personaje intente acercarse al centro. Esto ocurre durante las 3 últimas rondas de las 8 debido a que son las rondas de aviso de que el mapa va a cerrarse.
+
+
+## Sistema de combate
+
+Cuando dos personajes entran en contacto, comienzan un combate. En este duelo, el valor de ataque de cada uno se irá restando a la vida del otro una vez por ronda, lo cual acabará con la muerte de uno de ellos, o, en algunos casos, incluso de ambos. En caso de haber recibido daño, al estar fuera de combate los personajes recuperarán una pequeña cantidad de salud por ronda.
+
+## Final de la partida
+
+Cuando en la zona solo queda un personaje vivo (o ninguno), se procederá al final de la partida. La tormenta cesará y se anunciará el personaje ganador, o en caso de no haberlo, se indicará que todos han muerto.
+
+## Ejecución
+
+Para ejecutar el código únicamente hay que pulsar el botón de *Play* en Visual Studio.
+
+## Autores
+
+Los autores de este proyecto han sido Rodrigo Jiménez Vielba, Olaia Picabea Sainz y Álvaro Quintanilla Carrasco.
