@@ -61,8 +61,9 @@ A través de menús de texto, el usuario puede:
 Durante la ejecución, el estado del juego se muestra mediante la matriz del mapa y mensajes informativos que indican los movimientos, ataques y eliminaciones.  
 Esta interfaz, aunque simple, permite seguir el desarrollo de la partida de forma clara y cumple con los requisitos del proyecto sin necesidad de interfaz gráfica.
 
-![Menú inicial](images/batlleRoyaleMainMenu.jpg)
 
+
+![Menú inicial](images/batlleRoyaleMainMenu.jpg)
 
 
 ## Organización general
@@ -134,13 +135,12 @@ Gracias a esta estructura del mapa de juego, se ha conseguido reducir la complej
 
 ## Reducción progresiva de mapa
 
-Como *complicación extra* para nuestro proyecto hemos añadido una reducción de la arena de combate, de manera que cualquier personaje que este fuera quede eliminado automáticamente. para ello, hemos creado la función **cerrarArea()** que va sobrescribiendo la parte mas externa del área con ## cada 8 rondas. Esto da un efecto de zona peligrosa o zona con tormenta.
-Además hemos implementado un booleano llamado **irAlCentro** que propicia que, cuando esta en **true**, el personaje intente acercarse al centro. Esto ocurre durante las 3 últimas rondas de las 8 debido a que son las rondas de aviso de que el mapa va a cerrarse.
+Como _complicación extra_ para nuestro proyecto hemos añadido una reducción de la arena de combate, de manera que cualquier personaje que este fuera quede eliminado automáticamente. para ello, hemos creado la función **cerrarArea()** que va sobrescribiendo la parte mas externa del área con ## cada 8 rondas. Esto da un efecto de zona peligrosa o zona con tormenta. Internamente, en la matriz de ids se sustituyen los -1 que representan los espacios vacios del area, por -2 que representa la zona invadida por la tormenta. Además hemos implementado un booleano llamado **irAlCentro** que propicia que, cuando esta en **true**, el personaje intente acercarse al centro. Esto ocurre durante las 3 últimas rondas de las 8 debido a que son las rondas de aviso de que el mapa va a cerrarse.
 
 
 ## Sistema de combate
 
-Cuando dos personajes entran en contacto, comienzan un combate. En este duelo, el valor de ataque de cada uno se irá restando a la vida del otro una vez por ronda, lo cual acabará con la muerte de uno de ellos, o, en algunos casos, incluso de ambos. En caso de haber recibido daño, al estar fuera de combate los personajes recuperarán una pequeña cantidad de salud por ronda.
+Cuando dos personajes entran en contacto, comienzan un combate. Durante este duelo, ninguno de los dos se moverá hasta acabarlo, y el valor de ataque de cada uno se irá restando a la vida del otro una vez por ronda, lo cual acabará con la muerte de uno de ellos, o, en algunos casos, incluso de ambos. En caso de haber recibido daño, al estar fuera de combate los personajes recuperarán una pequeña cantidad de salud por ronda.
 
 ## Final de la partida
 
@@ -150,6 +150,14 @@ Cuando en la zona solo queda un personaje vivo (o ninguno), se procederá al fin
 
 Para ejecutar el código únicamente hay que pulsar el botón de *Play* en Visual Studio.
 
+
+## Sistema de colaboración
+Para facilitar la colaboración en el proyecto utilizamos el sistema de control de versiones de **git**, con la plataforma **gitHub**. 
+
+Repositorio del proyecto:  
+https://github.com/olaaaiap/battle-royale
+
 ## Autores
 
 Los autores de este proyecto han sido Rodrigo Jiménez Vielba, Olaia Picabea Sainz y Álvaro Quintanilla Carrasco.
+
