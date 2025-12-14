@@ -63,7 +63,9 @@ Esta interfaz simple permite llevar un seguimiento de lo que ocurre en la partid
 
 
 ![Menú inicial](images/battleRoyaleMainMenu.jpg)
-![Menú inicial](images/battleRoyaleGame.jpg)
+
+
+![Partida](images/battleRoyaleGame.png)
 
 
 ## Organización general (por clases)
